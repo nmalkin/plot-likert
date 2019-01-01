@@ -1,0 +1,9 @@
+At this stage, this project can best be considered a quick-and-dirty hack and lacks a lot of features that would be nice to have, including:
+
+- Support for 7-point (or other) scales
+- Less hacky legend
+- Better padding for the plot
+- Support for Python 2
+- Alternate color schemes
+
+Your contribution for these (or any other) features is very welcome!

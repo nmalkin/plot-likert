@@ -95,6 +95,7 @@ def likert_counts(df: pandas.DataFrame, scale: Scale) -> pandas.DataFrame:
 
     counts_unordered = df.apply(lambda row: row.value_counts())
     counts = counts_unordered.reindex(scale).T
+    counts = counts.fillna(0)
     return counts
 
 

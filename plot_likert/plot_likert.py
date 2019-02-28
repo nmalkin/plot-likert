@@ -118,5 +118,5 @@ def likert_percentages(df: pandas.DataFrame, scale: Scale) -> pandas.DataFrame:
         )
 
     return counts.apply(lambda row: row / row.sum(), axis=1).applymap(
-        lambda v: int(round(100 * v))
+        lambda v: 100 * v
     )

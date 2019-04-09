@@ -43,7 +43,7 @@ def plot_counts(
     )
     center = middles.max()
 
-    padding_values = (middles - (center/2)).abs()
+    padding_values = (middles - center).abs()
     padded_counts = pandas.concat([padding_values, counts], axis=1)
     # hack to "hide" the label for the padding
     padded_counts = padded_counts.rename({0: "Legend"}, axis=1)

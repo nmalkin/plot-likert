@@ -36,7 +36,7 @@ likert_colors = [
 
 
 def plot_counts(
-    counts: pandas.DataFrame, scale: Scale, figsize=None
+    counts: pandas.DataFrame, scale: Scale, figsize=None, plot_percentage: bool = False
 ) -> matplotlib.axes.Axes:
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2
@@ -73,6 +73,9 @@ def plot_counts(
     xvalues = numpy.concatenate([left_values, right_values])
 
     xlabels = [int(l) for l in xlabels if round(l) == l]
+
+    if plot_percentage:
+        xlabels = [str(label) + "%" for label in xlabels]
 
     ax.set_xticks(xvalues)
     ax.set_xticklabels(xlabels)

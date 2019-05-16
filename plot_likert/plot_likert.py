@@ -23,6 +23,8 @@ except RuntimeError as err:
 
 from plot_likert.scales import Scale
 
+padding_left = 5
+
 likert_colors = [
     "white",
     "firebrick",
@@ -41,7 +43,7 @@ def plot_counts(
     middles = (
         counts.iloc[:, 0:scale_middle].sum(axis=1) + counts.iloc[:, scale_middle] / 2
     )
-    center = middles.max()
+    center = middles.max() + padding_left
 
     padding_values = (middles - center).abs()
     padded_counts = pandas.concat([padding_values, counts], axis=1)
@@ -117,6 +119,4 @@ def likert_percentages(df: pandas.DataFrame, scale: Scale) -> pandas.DataFrame:
             "Not all (sub)questions have the same number of responses. Therefore, percentages aren't directly comparable."
         )
 
-    return counts.apply(lambda row: row / row.sum(), axis=1).applymap(
-        lambda v: 100 * v
-    )
+    return counts.apply(lambda row: row / row.sum(), axis=1).applymap(lambda v: 100 * v)

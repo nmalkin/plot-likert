@@ -1,12 +1,15 @@
 """
-Plot Likert-style data from Pd using Matplotlib
+Plot Likert-style data from Pandas using Matplotlib
 
 Initially based on code from Austin Cory Bart
 https://stackoverflow.com/a/41384812
+
+
+Note:
+the data must be strings
+for a float: scores.applymap(int).applymap(str)
 """
 
-# the data must be strings
-# for a float: scores.applymap(int).applymap(str)
 
 import logging
 from warnings import warn
@@ -76,7 +79,7 @@ def plot_counts(
     left_labels = np.arange(0, center + 1, interval)
     left_values = center - left_labels
     if plot_percentage:
-        xlabels = np.concatenate([left_labels, right_labels])  # //10*10
+        xlabels = np.concatenate([left_labels, right_labels])
     else:
         xlabels = np.concatenate([left_labels, right_labels])
     xvalues = np.concatenate([left_values, right_values])
@@ -153,8 +156,8 @@ def likert_percentages(
 
 def likert_response(df: pd.DataFrame, scale: Scale) -> pd.DataFrame:
     """
-    This function replaces values in the the original data set to match one of the plot_likert
-    scales in scales.py.  Note that you should use a '_0' scales if there are NA values in the
+    This function replaces values in the original dataset to match one of the plot_likert
+    scales in scales.py. Note that you should use a '_0' scale if there are NA values in the
     orginal data.
     """
     for i in range(0, len(scale)):

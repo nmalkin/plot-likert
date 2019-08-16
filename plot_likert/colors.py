@@ -1,4 +1,7 @@
-# This file allow for more color maps.
+"""
+This file allow for more color maps.
+"""
+
 import typing
 
 Colors = typing.List[str]

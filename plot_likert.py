@@ -173,3 +173,11 @@ def plot_likert(
     else:
         counts = likert_percentages(df_fixed, format_scale, wrap, zero)
     plot_counts(counts, plot_scale, colors, plot_percentage, pcts)
+
+def raw_scale(
+    df: pd.DataFrame) -> pd.DataFrame:
+    """
+    The purpose of this function is to determine the scale(s) used in the dataset.
+    df_m = df.melt()
+    scale = df_m['value'].drop_duplicates()
+    return scale

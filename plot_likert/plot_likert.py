@@ -29,7 +29,7 @@ except RuntimeError as err:
     raise err
 
 from plot_likert.scales import Scale
-from plot_likert.colors import Colors
+import plot_likert.colors as colors
 
 padding_left = 5
 
@@ -37,7 +37,7 @@ padding_left = 5
 def plot_counts(
     counts: pd.DataFrame,
     scale: Scale,
-    colors: Colors,
+    colors: colors.Colors = colors.default,
     plot_percentage: bool = False,
     pcts: bool = False,
 ) -> matplotlib.axes.Axes:
@@ -169,7 +169,7 @@ def plot_likert(
     df: pd.DataFrame,
     format_scale: Scale,
     plot_scale: Scale,
-    colors: Colors,
+    colors: colors.Colors,
     wrap: int = 30,
     zero: bool = False,
     pcts: bool = False,

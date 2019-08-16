@@ -98,7 +98,9 @@ def plot_counts(
     return ax
 
 
-def likert_counts(df: pd.DataFrame, scale: Scale, width=30, zero=False) -> pd.DataFrame:
+def likert_counts(
+    df: pd.DataFrame, scale: Scale, label_max_width=30, drop_zeros=False
+) -> pd.DataFrame:
     """
     Given a dataframe of Likert-style responses, returns a count of each response,
     validating them against the provided scale.
@@ -113,7 +115,7 @@ def likert_counts(df: pd.DataFrame, scale: Scale, width=30, zero=False) -> pd.Da
     # fix long questions for printing
     old_labels = list(df)
     old_labels.sort()
-    new_labels = ["\n".join(wrap(l, width)) for l in old_labels]
+    new_labels = ["\n".join(wrap(l, label_max_width)) for l in old_labels]
     df = df.set_axis(new_labels, axis=1, inplace=False)
 
     counts_unordered = df.apply(lambda row: row.value_counts())
@@ -121,7 +123,7 @@ def likert_counts(df: pd.DataFrame, scale: Scale, width=30, zero=False) -> pd.Da
     counts = counts.fillna(0)
 
     # remove NA scores
-    if zero == True:
+    if drop_zeros == True:
         counts = counts.drop("0", axis=1)
 
     return counts
@@ -166,22 +168,22 @@ def plot_likert(
     format_scale: Scale,
     plot_scale: Scale,
     colors: colors.Colors,
-    wrap: int = 30,
-    zero: bool = False,
+    label_max_width: int = 30,
+    drop_zeros: bool = False,
     plot_percentage: bool = False,
 ) -> matplotlib.axes.Axes:
     """
     The purpose of this function is to combine all of the steps into one 'simple' function.
     format_scale is the scale used to reformat the responses (with '_0' for a dataset with NA values).
     plot_scale is the scale used for the actual plot.
-    wrap is the character wrap length for the Y axis.
-    zero indicates whether the data have NA values (True) or not (False).
+    label_max_width is the character wrap length for the Y axis.
+    drop_zeros indicates whether the data have NA values that should be dropped (True) or not (False).
     """
     df_fixed = likert_response(df, format_scale)
     if plot_percentage:
-        counts = likert_percentages(df_fixed, format_scale, wrap, zero)
+        counts = likert_percentages(df_fixed, format_scale, label_max_width, drop_zeros)
     else:
-        counts = likert_counts(df_fixed, format_scale, wrap, zero)
+        counts = likert_counts(df_fixed, format_scale, label_max_width, drop_zeros)
     plot_counts(counts, plot_scale, plot_percentage, colors)
 
 

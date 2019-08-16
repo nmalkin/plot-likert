@@ -18,6 +18,7 @@ agree5: Scale = [
     "Agree",
     "Strongly agree",
 ]
+agree: Scale = agree5
 
 acceptable5_0: Scale = [
     "0",
@@ -35,6 +36,7 @@ acceptable5: Scale = [
     "Somewhat acceptable",
     "Completely acceptable",
 ]
+acceptable: Scale = acceptable5
 
 scores5_0: Scale = [
     "0",

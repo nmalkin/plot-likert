@@ -178,6 +178,7 @@ def raw_scale(
     df: pd.DataFrame) -> pd.DataFrame:
     """
     The purpose of this function is to determine the scale(s) used in the dataset.
+    """
     df_m = df.melt()
     scale = df_m['value'].drop_duplicates()
     return scale

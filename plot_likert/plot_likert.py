@@ -37,8 +37,8 @@ padding_left = 5
 def plot_counts(
     counts: pd.DataFrame,
     scale: Scale,
-    colors: colors.Colors = colors.default,
     plot_percentage: bool = False,
+    colors: colors.Colors = colors.default,
 ) -> matplotlib.axes.Axes:
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2
@@ -182,7 +182,7 @@ def plot_likert(
         counts = likert_percentages(df_fixed, format_scale, wrap, zero)
     else:
         counts = likert_counts(df_fixed, format_scale, wrap, zero)
-    plot_counts(counts, plot_scale, colors, plot_percentage)
+    plot_counts(counts, plot_scale, plot_percentage, colors)
 
 
 def raw_scale(df: pd.DataFrame) -> pd.DataFrame:

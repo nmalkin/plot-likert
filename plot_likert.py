@@ -31,7 +31,7 @@ from plot_likert.colors import Colors
 padding_left = 5
 
 def plot_counts(
-        counts: pd.DataFrame, scale: Scale, colors: Colors, figsize=None, plot_percentage: bool = False
+        counts: pd.DataFrame, scale: Scale, colors: Colors, plot_percentage: bool = False
 ) -> matplotlib.axes.Axes:
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2
@@ -53,7 +53,7 @@ def plot_counts(
     reversed_rows = padded_counts.iloc[::-1]
 
     # Start putting together the plot
-    ax = reversed_rows.plot.barh(stacked=True, color=colors, figsize=figsize)
+    ax = reversed_rows.plot.barh(stacked=True, color=colors)
 
     # Draw center line
     center_line = plt.axvline(center, linestyle="--", color="black", alpha=0.5)
@@ -147,9 +147,14 @@ def likert_response(df: pd.DataFrame, scale: Scale) -> pd.DataFrame:
 
 
 def plot_likert(
-        df: pd.DataFrame, format_scale: Scale, plot_scale: Scale, colors: Colors,
-        wrap: int = 30, zero: bool=False, pcts: bool=False, figsize=None,
-        plot_percentage: bool = False) -> matplotlib.axes.Axes:
+        df: pd.DataFrame,
+        format_scale: Scale,
+        plot_scale: Scale,
+        colors: Colors,
+        wrap: int = 30,
+        zero: bool=False,
+        pcts: bool=False,
+        plot_percentage: bool=False) -> matplotlib.axes.Axes:
     """
     The purpose of this function is to combine all of the steps into one 'simple' function.
     format_scale is the scale used to reformat the responses (with '_0' for a dataset with NA values).
@@ -163,4 +168,4 @@ def plot_likert(
         counts = likert_counts(df_fixed, format_scale, wrap, zero)
     else:
         counts = likert_percentages(df_fixed, format_scale, wrap, zero)
-    plot_counts(counts, plot_scale, colors)
+    plot_counts(counts, plot_scale, colors, plot_percentage)

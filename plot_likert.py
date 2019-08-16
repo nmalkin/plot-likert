@@ -31,7 +31,7 @@ from plot_likert.colors import Colors
 padding_left = 5
 
 def plot_counts(
-        counts: pd.DataFrame, scale: Scale, colors: Colors, plot_percentage: bool = False
+        counts: pd.DataFrame, scale: Scale, colors: Colors, plot_percentage: bool = False, pcts: bool=False
 ) -> matplotlib.axes.Axes:
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2
@@ -80,6 +80,10 @@ def plot_counts(
 
     ax.set_xticks(xvalues)
     ax.set_xticklabels(xlabels)
+    if pcts is True:
+        ax.set_xlabel('Percentage of Responses')
+    else:
+        ax.set_xlabel('Number of Responses')
 
     # Control legend
     plt.legend(bbox_to_anchor=(1.05, 1))
@@ -168,4 +172,4 @@ def plot_likert(
         counts = likert_counts(df_fixed, format_scale, wrap, zero)
     else:
         counts = likert_percentages(df_fixed, format_scale, wrap, zero)
-    plot_counts(counts, plot_scale, colors, plot_percentage)
+    plot_counts(counts, plot_scale, colors, plot_percentage, pcts)

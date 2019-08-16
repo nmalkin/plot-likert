@@ -39,7 +39,6 @@ def plot_counts(
     scale: Scale,
     colors: colors.Colors = colors.default,
     plot_percentage: bool = False,
-    pcts: bool = False,
 ) -> matplotlib.axes.Axes:
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2
@@ -78,10 +77,7 @@ def plot_counts(
     right_values = center + right_labels
     left_labels = np.arange(0, center + 1, interval)
     left_values = center - left_labels
-    if plot_percentage:
-        xlabels = np.concatenate([left_labels, right_labels])
-    else:
-        xlabels = np.concatenate([left_labels, right_labels])
+    xlabels = np.concatenate([left_labels, right_labels])
     xvalues = np.concatenate([left_values, right_values])
 
     xlabels = [int(l) for l in xlabels if round(l) == l]
@@ -91,7 +87,7 @@ def plot_counts(
 
     ax.set_xticks(xvalues)
     ax.set_xticklabels(xlabels)
-    if pcts is True:
+    if plot_percentage is True:
         ax.set_xlabel("Percentage of Responses")
     else:
         ax.set_xlabel("Number of Responses")
@@ -172,7 +168,6 @@ def plot_likert(
     colors: colors.Colors,
     wrap: int = 30,
     zero: bool = False,
-    pcts: bool = False,
     plot_percentage: bool = False,
 ) -> matplotlib.axes.Axes:
     """
@@ -181,14 +176,13 @@ def plot_likert(
     plot_scale is the scale used for the actual plot.
     wrap is the character wrap length for the Y axis.
     zero indicates whether the data have NA values (True) or not (False).
-    pcts indicates whether the plot will be numeric (False) or percentages (True)
     """
     df_fixed = likert_response(df, format_scale)
-    if pcts == False:
-        counts = likert_counts(df_fixed, format_scale, wrap, zero)
-    else:
+    if plot_percentage:
         counts = likert_percentages(df_fixed, format_scale, wrap, zero)
-    plot_counts(counts, plot_scale, colors, plot_percentage, pcts)
+    else:
+        counts = likert_counts(df_fixed, format_scale, wrap, zero)
+    plot_counts(counts, plot_scale, colors, plot_percentage)
 
 
 def raw_scale(df: pd.DataFrame) -> pd.DataFrame:

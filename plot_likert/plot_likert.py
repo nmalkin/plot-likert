@@ -30,16 +30,24 @@ from plot_likert.colors import Colors
 
 padding_left = 5
 
+
 def plot_counts(
-        counts: pd.DataFrame, scale: Scale, colors: Colors, plot_percentage: bool = False, pcts: bool=False
+    counts: pd.DataFrame,
+    scale: Scale,
+    colors: Colors,
+    plot_percentage: bool = False,
+    pcts: bool = False,
 ) -> matplotlib.axes.Axes:
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2
 
-    if scale_middle == len(scale)/2:
-        middles = (counts.iloc[:, 0:scale_middle].sum(axis=1))
+    if scale_middle == len(scale) / 2:
+        middles = counts.iloc[:, 0:scale_middle].sum(axis=1)
     else:
-        middles = (counts.iloc[:, 0:scale_middle].sum(axis=1) + counts.iloc[:, scale_middle] / 2)
+        middles = (
+            counts.iloc[:, 0:scale_middle].sum(axis=1)
+            + counts.iloc[:, scale_middle] / 2
+        )
 
     center = middles.max() + padding_left
 
@@ -68,7 +76,7 @@ def plot_counts(
     left_labels = np.arange(0, center + 1, interval)
     left_values = center - left_labels
     if plot_percentage:
-        xlabels = np.concatenate([left_labels, right_labels]) #//10*10
+        xlabels = np.concatenate([left_labels, right_labels])  # //10*10
     else:
         xlabels = np.concatenate([left_labels, right_labels])
     xvalues = np.concatenate([left_values, right_values])
@@ -81,14 +89,15 @@ def plot_counts(
     ax.set_xticks(xvalues)
     ax.set_xticklabels(xlabels)
     if pcts is True:
-        ax.set_xlabel('Percentage of Responses')
+        ax.set_xlabel("Percentage of Responses")
     else:
-        ax.set_xlabel('Number of Responses')
+        ax.set_xlabel("Number of Responses")
 
     # Control legend
     plt.legend(bbox_to_anchor=(1.05, 1))
 
     return ax
+
 
 def likert_counts(df: pd.DataFrame, scale: Scale, width=30, zero=False) -> pd.DataFrame:
     """
@@ -105,7 +114,7 @@ def likert_counts(df: pd.DataFrame, scale: Scale, width=30, zero=False) -> pd.Da
     # fix long questions for printing
     old_labels = list(df)
     old_labels.sort()
-    new_labels = [ '\n'.join(wrap(l, width)) for l in old_labels ]
+    new_labels = ["\n".join(wrap(l, width)) for l in old_labels]
     df = df.set_axis(new_labels, axis=1, inplace=False)
 
     counts_unordered = df.apply(lambda row: row.value_counts())
@@ -113,13 +122,15 @@ def likert_counts(df: pd.DataFrame, scale: Scale, width=30, zero=False) -> pd.Da
     counts = counts.fillna(0)
 
     # remove NA scores
-    if zero==True:
-        counts = counts.drop('0', axis=1)
+    if zero == True:
+        counts = counts.drop("0", axis=1)
 
     return counts
 
 
-def likert_percentages(df: pd.DataFrame, scale: Scale, width=30, zero=False) -> pd.DataFrame:
+def likert_percentages(
+    df: pd.DataFrame, scale: Scale, width=30, zero=False
+) -> pd.DataFrame:
     """
     Given a dataframe of Likert-style responses, returns a new one
     reporting the percentage of respondents that chose each response.
@@ -139,6 +150,7 @@ def likert_percentages(df: pd.DataFrame, scale: Scale, width=30, zero=False) -> 
 
     return counts.apply(lambda row: row / row.sum(), axis=1).applymap(lambda v: 100 * v)
 
+
 def likert_response(df: pd.DataFrame, scale: Scale) -> pd.DataFrame:
     """
     This function replaces values in the the original data set to match one of the plot_likert
@@ -146,19 +158,20 @@ def likert_response(df: pd.DataFrame, scale: Scale) -> pd.DataFrame:
     orginal data.
     """
     for i in range(0, len(scale)):
-        df = df.applymap(lambda x: scale[i] if str(i) in x else x )
+        df = df.applymap(lambda x: scale[i] if str(i) in x else x)
     return df
 
 
 def plot_likert(
-        df: pd.DataFrame,
-        format_scale: Scale,
-        plot_scale: Scale,
-        colors: Colors,
-        wrap: int = 30,
-        zero: bool=False,
-        pcts: bool=False,
-        plot_percentage: bool=False) -> matplotlib.axes.Axes:
+    df: pd.DataFrame,
+    format_scale: Scale,
+    plot_scale: Scale,
+    colors: Colors,
+    wrap: int = 30,
+    zero: bool = False,
+    pcts: bool = False,
+    plot_percentage: bool = False,
+) -> matplotlib.axes.Axes:
     """
     The purpose of this function is to combine all of the steps into one 'simple' function.
     format_scale is the scale used to reformat the responses (with '_0' for a dataset with NA values).
@@ -168,17 +181,17 @@ def plot_likert(
     pcts indicates whether the plot will be numeric (False) or percentages (True)
     """
     df_fixed = likert_response(df, format_scale)
-    if pcts==False:
+    if pcts == False:
         counts = likert_counts(df_fixed, format_scale, wrap, zero)
     else:
         counts = likert_percentages(df_fixed, format_scale, wrap, zero)
     plot_counts(counts, plot_scale, colors, plot_percentage, pcts)
 
-def raw_scale(
-    df: pd.DataFrame) -> pd.DataFrame:
+
+def raw_scale(df: pd.DataFrame) -> pd.DataFrame:
     """
     The purpose of this function is to determine the scale(s) used in the dataset.
     """
     df_m = df.melt()
-    scale = df_m['value'].drop_duplicates()
+    scale = df_m["value"].drop_duplicates()
     return scale

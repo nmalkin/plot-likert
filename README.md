@@ -17,8 +17,8 @@ Installation
 pip install git+https://github.com/nmalkin/plot-likert.git
 ```
 
-Usage
------
+Usage and sample figures
+------------------------
 
 See [the example Jupyter notebook](example.ipynb)
 

@@ -165,12 +165,12 @@ def likert_response(df: pd.DataFrame, scale: Scale) -> pd.DataFrame:
 
 def plot_likert(
     df: pd.DataFrame,
-    format_scale: Scale,
     plot_scale: Scale,
-    colors: colors.Colors,
+    plot_percentage: bool = False,
+    format_scale: Scale = None,
+    colors: colors.Colors = colors.default,
     label_max_width: int = 30,
     drop_zeros: bool = False,
-    plot_percentage: bool = False,
 ) -> matplotlib.axes.Axes:
     """
     The purpose of this function is to combine all of the steps into one 'simple' function.
@@ -179,11 +179,17 @@ def plot_likert(
     label_max_width is the character wrap length for the Y axis.
     drop_zeros indicates whether the data have NA values that should be dropped (True) or not (False).
     """
-    df_fixed = likert_response(df, format_scale)
+    if format_scale:
+        df_fixed = likert_response(df, format_scale)
+    else:
+        df_fixed = df
+        format_scale = plot_scale
+
     if plot_percentage:
         counts = likert_percentages(df_fixed, format_scale, label_max_width, drop_zeros)
     else:
         counts = likert_counts(df_fixed, format_scale, label_max_width, drop_zeros)
+
     plot_counts(counts, plot_scale, plot_percentage, colors)
 
 

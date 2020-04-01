@@ -39,6 +39,7 @@ def plot_counts(
     scale: Scale,
     plot_percentage: bool = False,
     colors: colors.Colors = colors.default,
+    figsize=None,
 ) -> matplotlib.axes.Axes:
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2
@@ -63,7 +64,7 @@ def plot_counts(
     reversed_rows = padded_counts.iloc[::-1]
 
     # Start putting together the plot
-    ax = reversed_rows.plot.barh(stacked=True, color=colors)
+    ax = reversed_rows.plot.barh(stacked=True, color=colors, figsize=figsize)
 
     # Draw center line
     center_line = plt.axvline(center, linestyle="--", color="black", alpha=0.5)
@@ -171,6 +172,7 @@ def plot_likert(
     colors: colors.Colors = colors.default,
     label_max_width: int = 30,
     drop_zeros: bool = False,
+    figsize=None,
 ) -> matplotlib.axes.Axes:
     """
     The purpose of this function is to combine all of the steps into one 'simple' function.
@@ -190,7 +192,7 @@ def plot_likert(
     else:
         counts = likert_counts(df_fixed, format_scale, label_max_width, drop_zeros)
 
-    plot_counts(counts, plot_scale, plot_percentage, colors)
+    plot_counts(counts, plot_scale, plot_percentage, colors, figsize=figsize)
 
 
 def raw_scale(df: pd.DataFrame) -> pd.DataFrame:

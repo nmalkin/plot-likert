@@ -31,7 +31,7 @@ except RuntimeError as err:
 from plot_likert.scales import Scale
 import plot_likert.colors as colors
 
-padding_left = 5
+PADDING_LEFT = 0.05  # fraction of the total width to use as padding
 
 
 def plot_counts(
@@ -52,6 +52,7 @@ def plot_counts(
             + counts.iloc[:, scale_middle] / 2
         )
 
+    padding_left = PADDING_LEFT * counts.sum(axis="columns").max()
     center = middles.max() + padding_left
 
     padding_values = (middles - center).abs()
@@ -71,9 +72,10 @@ def plot_counts(
     center_line.set_zorder(-1)
 
     # Compute and show x labels
+    num_ticks = ax.xaxis.get_tick_space()
     max_width = int(round(padded_counts.sum(axis=1).max()))
+    interval = round(max_width / num_ticks)
     right_edge = max_width - center
-    interval = ax.xaxis.get_tick_space()
     right_labels = np.arange(0, right_edge, interval)
     right_values = center + right_labels
     left_labels = np.arange(0, center + 1, interval)

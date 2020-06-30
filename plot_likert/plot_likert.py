@@ -76,7 +76,7 @@ def plot_counts(
     max_width = int(round(padded_counts.sum(axis=1).max()))
     interval = round(max_width / num_ticks)
     right_edge = max_width - center
-    right_labels = np.arange(0, right_edge, interval)
+    right_labels = np.arange(0, right_edge + interval, interval)
     right_values = center + right_labels
     left_labels = np.arange(0, center + 1, interval)
     left_values = center - left_labels

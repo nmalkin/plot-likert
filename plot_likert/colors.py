@@ -7,7 +7,7 @@ import typing
 Colors = typing.List[str]
 
 default: Colors = [
-    "white",
+    "#ffffff00",
     "firebrick",
     "lightcoral",
     "gainsboro",

@@ -82,8 +82,10 @@ def plot_counts(
 
     # Compute and show x labels
     if plot_percentage:
-        # Percentage values are based on the interval, e.g. [0, 10, 20] if percent_interval == 10
-        # Try to find the highest percentage value needed
+        if (ax.xaxis.get_tick_space() < max_width / percent_interval):
+            warn(
+                "Not enough ticks for given percentage interval. Consider choosing a higher percentage interval."
+            )
         intervals = (max_width // percent_interval) + 2
         labels = np.arange(0, intervals * percent_interval, percent_interval)
         print(labels)
@@ -103,7 +105,8 @@ def plot_counts(
             warn(
                 "Not enough ticks for given value interval. Consider choosing a higher value interval."
             )
-        labels = np.arange(0, max_width + value_interval, value_interval)
+        intervals = (max_width // value_interval) + 2
+        labels = np.arange(0, intervals * value_interval, value_interval)
         print(labels)
         right_values = center + labels
         left_values = center - labels

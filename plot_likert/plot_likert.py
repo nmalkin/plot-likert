@@ -38,6 +38,8 @@ def plot_counts(
     counts: pd.DataFrame,
     scale: Scale,
     plot_percentage: bool = False,
+    percent_interval: int = 10,
+    value_interval: int = 1,
     colors: colors.Colors = colors.default,
     figsize=None,
 ) -> matplotlib.axes.Axes:
@@ -46,14 +48,21 @@ def plot_counts(
 
     if scale_middle == len(scale) / 2:
         middles = counts.iloc[:, 0:scale_middle].sum(axis=1)
+        right_edges = counts.iloc[:, scale_middle:-1].sum(axis=1)
     else:
         middles = (
             counts.iloc[:, 0:scale_middle].sum(axis=1)
             + counts.iloc[:, scale_middle] / 2
         )
+        right_edges = (
+            counts.iloc[:, scale_middle:-1].sum(axis=1)
+        )
 
     padding_left = PADDING_LEFT * counts.sum(axis="columns").max()
     center = middles.max() + padding_left
+    max_width = max(middles.max(), right_edges.max())
+    print("right edge:", right_edges.max())
+    print("max width:", max_width)
 
     padding_values = (middles - center).abs()
     padded_counts = pd.concat([padding_values, counts], axis=1)
@@ -72,29 +81,35 @@ def plot_counts(
     center_line.set_zorder(-1)
 
     # Compute and show x labels
-    num_ticks = ax.xaxis.get_tick_space()
-    max_width = int(round(padded_counts.sum(axis=1).max()))
-    interval = round(max_width / num_ticks)
-    right_edge = max_width - center
-    right_labels = np.arange(0, right_edge + interval, interval)
-    right_values = center + right_labels
-    left_labels = np.arange(0, center + 1, interval)
-    left_values = center - left_labels
-    xlabels = np.concatenate([left_labels, right_labels])
-    xvalues = np.concatenate([left_values, right_values])
-
-    xlabels = [int(l) for l in xlabels if round(l) == l]
-
     if plot_percentage:
-        xlabels = [str(label) + "%" for label in xlabels]
+        # Percentage values are based on the interval, e.g. [0, 10, 20] if percent_interval == 10
+        # Try to find the highest percentage value needed
+        intervals = (max_width // percent_interval) + 2
+        labels = np.arange(0, intervals * percent_interval, percent_interval)
+        print(labels)
+        right_values = center + labels
+        left_values = center - labels
+        xlabels = np.concatenate([labels, labels])
+        xvalues = np.concatenate([left_values, right_values])
+        xlabels = [str(int(label)) + "%" for label in xlabels]
+        ax.set_xlabel("Percentage of Responses")
+    else:
+        num_ticks = ax.xaxis.get_tick_space()
+        if (num_ticks < max_width / value_interval):
+            warn(
+                "Not enough ticks for given value interval. Consider choosing a higher value interval."
+            )
+        labels = np.arange(0, max_width + value_interval, value_interval)
+        print(labels)
+        right_values = center + labels
+        left_values = center - labels
+        xlabels = np.concatenate([labels, labels])
+        xvalues = np.concatenate([left_values, right_values])
+        ax.set_xlabel("Number of Responses")
 
     ax.set_xticks(xvalues)
     ax.set_xticklabels(xlabels)
-    if plot_percentage is True:
-        ax.set_xlabel("Percentage of Responses")
-    else:
-        ax.set_xlabel("Number of Responses")
-
+        
     # Control legend
     plt.legend(bbox_to_anchor=(1.05, 1))
 

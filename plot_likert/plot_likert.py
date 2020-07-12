@@ -91,11 +91,15 @@ def plot_counts(
         left_values = center - labels
         xlabels = np.concatenate([labels, labels])
         xvalues = np.concatenate([left_values, right_values])
+
+        # Remove duplicate zeroes
+        xlabels = xlabels[1:]
+        xvalues = xvalues[1:] 
+
         xlabels = [str(int(label)) + "%" for label in xlabels]
         ax.set_xlabel("Percentage of Responses")
     else:
-        num_ticks = ax.xaxis.get_tick_space()
-        if (num_ticks < max_width / value_interval):
+        if (ax.xaxis.get_tick_space() < max_width / value_interval):
             warn(
                 "Not enough ticks for given value interval. Consider choosing a higher value interval."
             )
@@ -105,6 +109,11 @@ def plot_counts(
         left_values = center - labels
         xlabels = np.concatenate([labels, labels])
         xvalues = np.concatenate([left_values, right_values])
+
+        # Remove duplicate zeroes
+        xlabels = xlabels[1:]
+        xvalues = xvalues[1:] 
+
         ax.set_xlabel("Number of Responses")
 
     ax.set_xticks(xvalues)
@@ -114,8 +123,6 @@ def plot_counts(
     plt.legend(bbox_to_anchor=(1.05, 1))
 
     return ax
-
-
 def likert_counts(
     df: pd.DataFrame, scale: Scale, label_max_width=30, drop_zeros=False
 ) -> pd.DataFrame:

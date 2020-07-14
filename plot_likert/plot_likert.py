@@ -12,6 +12,7 @@ for a float: scores.applymap(int).applymap(str)
 
 
 import logging
+import typing
 from warnings import warn
 from textwrap import wrap
 
@@ -40,6 +41,7 @@ def plot_counts(
     plot_percentage: bool = False,
     colors: colors.Colors = colors.default,
     figsize=None,
+    xtick_interval: typing.Optional[int] = None,
 ) -> matplotlib.axes.Axes:
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2
@@ -74,7 +76,10 @@ def plot_counts(
     # Compute and show x labels
     num_ticks = ax.xaxis.get_tick_space()
     max_width = int(round(padded_counts.sum(axis=1).max()))
-    interval = round(max_width / num_ticks)
+    if xtick_interval is None:
+        interval = round(max_width / num_ticks)
+    else:
+        interval = xtick_interval
     right_edge = max_width - center
     right_labels = np.arange(0, right_edge + interval, interval)
     right_values = center + right_labels

@@ -32,6 +32,7 @@ except RuntimeError as err:
 from plot_likert.scales import Scale
 import plot_likert.colors as colors
 
+HIDE_EXCESSIVE_TICK_LABELS = True
 PADDING_LEFT = 0.05  # fraction of the total width to use as padding
 
 
@@ -89,6 +90,14 @@ def plot_counts(
     xvalues = np.concatenate([left_values, right_values])
 
     xlabels = [int(l) for l in xlabels if round(l) == l]
+
+    # Ensure tick labels don't exceed number of participants
+    # (or, in the case of percentages, 100%) since that looks confusing
+    if HIDE_EXCESSIVE_TICK_LABELS:
+        # Labels for tick values that are too high are hidden,
+        # but the tick mark itself remains displayed.
+        total_max = counts.sum(axis="columns").max()
+        xlabels = ["" if label > total_max else label for label in xlabels]
 
     if plot_percentage:
         xlabels = [str(label) + "%" for label in xlabels]

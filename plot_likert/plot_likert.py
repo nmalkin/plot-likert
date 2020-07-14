@@ -98,8 +98,10 @@ def plot_counts(
         
     
     # Generate xlabels, xvalues
-    ticks_needed = (max_width // interval) + 1
-    labels = np.arange(0, (ticks_needed+1) * interval, interval) # arange does not include the stop value, but we want it to
+    ticks_needed = (max_width // interval) + 1 # 'ceiling division'
+    # Arg 2 is +1 because otherwise the last element would be below max_width 
+    # as arange does not include the stop value in the array
+    labels = np.arange(0, (ticks_needed+1) * interval, interval) 
     right_values = center + labels
     left_values = center - labels
     xlabels = np.concatenate([labels, labels])
@@ -216,7 +218,10 @@ def plot_likert(
     else:
         counts = likert_counts(df_fixed, format_scale, label_max_width, drop_zeros)
 
-    plot_counts(counts=counts, scale=plot_scale, plot_percentage=plot_percentage, interval=interval, colors=colors, figsize=figsize)
+    plot_counts(
+        counts=counts, scale=plot_scale, plot_percentage=plot_percentage, 
+        interval=interval, colors=colors, figsize=figsize
+    )
 
 
 def raw_scale(df: pd.DataFrame) -> pd.DataFrame:

@@ -38,8 +38,7 @@ def plot_counts(
     counts: pd.DataFrame,
     scale: Scale,
     plot_percentage: bool = False,
-    percent_interval: int = 10,
-    value_interval: int = 1,
+    interval: int = None,
     colors: colors.Colors = colors.default,
     figsize=None,
 ) -> matplotlib.axes.Axes:
@@ -61,8 +60,7 @@ def plot_counts(
     padding_left = PADDING_LEFT * counts.sum(axis="columns").max()
     center = middles.max() + padding_left
     max_width = max(middles.max(), right_edges.max())
-    print("right edge:", right_edges.max())
-    print("max width:", max_width)
+
 
     padding_values = (middles - center).abs()
     padded_counts = pd.concat([padding_values, counts], axis=1)
@@ -80,43 +78,42 @@ def plot_counts(
     center_line = plt.axvline(center, linestyle="--", color="black", alpha=0.5)
     center_line.set_zorder(-1)
 
-    # Compute and show x labels
+    ticks_avail = ax.xaxis.get_tick_space()
+
+    
+    # If intervals not given, determine the best one to use
+    if interval == None:
+        # Define allowed intervals
+        # These should produce round numbers - it's just these three numbers except with
+        # variants raised to higher powers of ten -- e.g. [1, 2, 5, 10, 20, 50, 100, 200, 500]
+        allowed_intervals = np.array([1, 2, 5]) 
+        for i in range(1, 6): # from 10^1 (tens) to 10^5 (hundreds of thousands)
+            allowed_intervals = np.concatenate([allowed_intervals, allowed_intervals * np.power(10, i)])
+
+        for i in allowed_intervals:
+            # Calculate if this interval would allow the highest number to fit
+            if i * (ticks_avail // 2) >= max_width:
+                interval = i
+                break
+        
+    
+    # Generate xlabels, xvalues
+    ticks_needed = (max_width // interval) + 1
+    labels = np.arange(0, (ticks_needed+1) * interval, interval) # arange does not include the stop value, but we want it to
+    right_values = center + labels
+    left_values = center - labels
+    xlabels = np.concatenate([labels, labels])
+    xvalues = np.concatenate([left_values, right_values])
+
+    # Remove duplicate zeroes
+    xlabels = xlabels[1:]
+    xvalues = xvalues[1:] 
+
     if plot_percentage:
-        if (ax.xaxis.get_tick_space() < max_width / percent_interval):
-            warn(
-                "Not enough ticks for given percentage interval. Consider choosing a higher percentage interval."
-            )
-        intervals = (max_width // percent_interval) + 2
-        labels = np.arange(0, intervals * percent_interval, percent_interval)
-        print(labels)
-        right_values = center + labels
-        left_values = center - labels
-        xlabels = np.concatenate([labels, labels])
-        xvalues = np.concatenate([left_values, right_values])
-
-        # Remove duplicate zeroes
-        xlabels = xlabels[1:]
-        xvalues = xvalues[1:] 
-
         xlabels = [str(int(label)) + "%" for label in xlabels]
         ax.set_xlabel("Percentage of Responses")
     else:
-        if (ax.xaxis.get_tick_space() < max_width / value_interval):
-            warn(
-                "Not enough ticks for given value interval. Consider choosing a higher value interval."
-            )
-        intervals = (max_width // value_interval) + 2
-        labels = np.arange(0, intervals * value_interval, value_interval)
-        print(labels)
-        right_values = center + labels
-        left_values = center - labels
-        xlabels = np.concatenate([labels, labels])
-        xvalues = np.concatenate([left_values, right_values])
-
-        # Remove duplicate zeroes
-        xlabels = xlabels[1:]
-        xvalues = xvalues[1:] 
-
+        xlabels = [int(label) for label in xlabels]
         ax.set_xlabel("Number of Responses")
 
     ax.set_xticks(xvalues)
@@ -195,8 +192,7 @@ def plot_likert(
     plot_scale: Scale,
     plot_percentage: bool = False,
     format_scale: Scale = None,
-    percent_interval = 10,
-    value_interval = 1,
+    interval: int = None,
     colors: colors.Colors = colors.default,
     label_max_width: int = 30,
     drop_zeros: bool = False,
@@ -220,7 +216,7 @@ def plot_likert(
     else:
         counts = likert_counts(df_fixed, format_scale, label_max_width, drop_zeros)
 
-    plot_counts(counts=counts, scale=plot_scale, plot_percentage=plot_percentage, percent_interval=percent_interval, colors=colors, figsize=figsize)
+    plot_counts(counts=counts, scale=plot_scale, plot_percentage=plot_percentage, interval=interval, colors=colors, figsize=figsize)
 
 
 def raw_scale(df: pd.DataFrame) -> pd.DataFrame:

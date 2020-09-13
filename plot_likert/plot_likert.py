@@ -131,7 +131,7 @@ def likert_counts(
 
     # fix long questions for printing
     old_labels = list(df)
-    new_labels = ["\n".join(wrap(l, label_max_width)) for l in old_labels]
+    new_labels = ["\n".join(wrap(str(l), label_max_width)) for l in old_labels]
     df = df.set_axis(new_labels, axis=1, inplace=False)
 
     counts_unordered = df.apply(lambda row: row.value_counts())

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="plot_likert",
-    version="0.2.5",
+    version="0.2.6",
     author="nmalkin",
     description="Library to visualize results from Likert-style survey questions",
     long_description=long_description,

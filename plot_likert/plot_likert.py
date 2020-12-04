@@ -81,6 +81,7 @@ def plot_counts(
         interval = round(max_width / num_ticks)
     else:
         interval = xtick_interval
+    interval = max(1, interval)
     right_edge = max_width - center
     right_labels = np.arange(0, right_edge + interval, interval)
     right_values = center + right_labels

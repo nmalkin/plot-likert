@@ -208,7 +208,7 @@ def plot_likert(
     else:
         counts = likert_counts(df_fixed, format_scale, label_max_width, drop_zeros)
 
-    plot_counts(counts, plot_scale, plot_percentage, colors, figsize=figsize)
+    return plot_counts(counts, plot_scale, plot_percentage, colors, figsize=figsize)
 
 
 def raw_scale(df: pd.DataFrame) -> pd.DataFrame:

@@ -31,6 +31,7 @@ except RuntimeError as err:
 
 from plot_likert.scales import Scale
 import plot_likert.colors as colors
+import plot_likert.interval as interval_helper
 
 HIDE_EXCESSIVE_TICK_LABELS = True
 PADDING_LEFT = 0.05  # fraction of the total width to use as padding
@@ -75,13 +76,13 @@ def plot_counts(
     center_line.set_zorder(-1)
 
     # Compute and show x labels
-    num_ticks = ax.xaxis.get_tick_space()
     max_width = int(round(padded_counts.sum(axis=1).max()))
     if xtick_interval is None:
-        interval = round(max_width / num_ticks)
+        num_ticks = ax.xaxis.get_tick_space()
+        interval = interval_helper.get_interval_for_scale(num_ticks, max_width)
     else:
         interval = xtick_interval
-    interval = max(1, interval)
+
     right_edge = max_width - center
     right_labels = np.arange(0, right_edge + interval, interval)
     right_values = center + right_labels

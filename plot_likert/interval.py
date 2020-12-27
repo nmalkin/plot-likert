@@ -13,7 +13,10 @@ def get_next_interval_divisor() -> typing.Generator[int, None, None]:
     A generator that yields 5, and then successive powers of 10
     """
     yield 5
-    i = 0
+    yield 10
+    yield 25
+    yield 50
+    i = 1
     while True:
         i += 1
         yield 10 ** i
@@ -53,9 +56,11 @@ def get_interval_for_scale(tick_space: int, max_width: int) -> int:
     Given a width of the plot (max_width) and a suggested number of tick marks (tick_space),
     return the "best" interval to use between tick marks.
     """
-    min_ticks = tick_space - 1
-    max_ticks = tick_space + 1
-    min_interval = int(max_width / max_ticks)
+    min_ticks = tick_space - 5
+    max_ticks = tick_space + 2
+    min_interval = max(
+        1, int(max_width / max_ticks)
+    )  # to ensure zero can't be an interval
     max_interval = round(max_width / min_ticks)
 
     candidate_intervals = list(range(min_interval, max_interval + 1))

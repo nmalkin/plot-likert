@@ -6,8 +6,10 @@ import typing
 
 Colors = typing.List[str]
 
+TRANSPARENT = "#ffffff00"
+
 default: Colors = [
-    "#ffffff00",
+    TRANSPARENT,
     "firebrick",
     "lightcoral",
     "gainsboro",
@@ -18,7 +20,7 @@ default: Colors = [
 likert5: Colors = ["white", "#d8a539", "#efe0c1", "lightgray", "#bde1dd", "#5ab4ac"]
 
 likert6: Colors = [
-    "white",
+    TRANSPARENT,
     "#d8a539",
     "#dfc283",
     "#efe0c1",
@@ -27,7 +29,7 @@ likert6: Colors = [
     "#5ab4ac",
 ]
 likert7: Colors = [
-    "white",
+    TRANSPARENT,
     "#d8a539",
     "#dfc283",
     "#efe0c1",
@@ -38,7 +40,7 @@ likert7: Colors = [
 ]
 
 likert8: Colors = [
-    "white",
+    TRANSPARENT,
     "#d8b365",
     "#dfc283",
     "#e7d1a2",
@@ -50,7 +52,7 @@ likert8: Colors = [
 ]
 
 likert9: Colors = [
-    "white",
+    TRANSPARENT,
     "#d8b365",
     "#dfc283",
     "#e7d1a2",
@@ -63,7 +65,7 @@ likert9: Colors = [
 ]
 
 likert10: Colors = [
-    "white",
+    TRANSPARENT,
     "#d8b365",
     "#dfc283",
     "#e7d1a2",

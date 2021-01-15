@@ -102,7 +102,7 @@ def plot_counts(
         xlabels = ["" if label > total_max else label for label in xlabels]
 
     if plot_percentage:
-        xlabels = [str(label) + "%" for label in xlabels if label != ""]
+        xlabels = [str(label) + "%" if label != "" else "" for label in xlabels]
 
     ax.set_xticks(xvalues)
     ax.set_xticklabels(xlabels)

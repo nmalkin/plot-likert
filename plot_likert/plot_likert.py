@@ -61,8 +61,8 @@ def plot_counts(
 
     padding_values = (middles - center).abs()
     padded_counts = pd.concat([padding_values, counts], axis=1)
-    # Hide the padding row: matplotlib ignores data prefixed by "_"
-    padded_counts = padded_counts.rename({0: "_padding_row"}, axis=1)
+    # Hide the padding row from the legend
+    padded_counts = padded_counts.rename({0: ""}, axis=1)
 
     # Reverse rows to keep the questions in order
     # (Otherwise, the plot function shows the last one at the top.)

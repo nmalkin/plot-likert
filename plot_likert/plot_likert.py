@@ -164,7 +164,7 @@ def likert_percentages(
     responses_same = responses_per_question == responses_to_first_question
     if not responses_same.all():
         warn(
-            "Not all (sub)questions have the same number of responses. Therefore, percentages aren't directly comparable."
+            "In your data, not all questions have the same number of responses. i.e., different numbers of people answered each question. Therefore, the percentages aren't directly comparable: X% for one question represents a different number of responses than X% for another question, yet they will appear the same in the percentage graph. This may be misleading to your reader."
         )
 
     return counts.apply(lambda row: row / row.sum(), axis=1).applymap(lambda v: 100 * v)

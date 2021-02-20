@@ -72,7 +72,7 @@ def plot_counts(
     ax = reversed_rows.plot.barh(stacked=True, color=colors, figsize=figsize)
 
     # Draw center line
-    center_line = plt.axvline(center, linestyle="--", color="black", alpha=0.5)
+    center_line = ax.axvline(center, linestyle="--", color="black", alpha=0.5)
     center_line.set_zorder(-1)
 
     # Compute and show x labels

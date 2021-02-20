@@ -56,5 +56,6 @@ Here are a few to consider:
 - https://github.com/Oliph/likertScalePlot
 - https://blog.orikami.nl/behind-the-screens-likert-scale-visualization-368557ad72d1
 
-At this stage, it can best be considered a quick-and-dirty hack and lacks a lot of features that would be nice to have.
-(But it's been getting a lot better thanks to the contributions of a number of community members and [Fjohürs Lykkewe](https://www.youtube.com/watch?v=ef7cTuVUiWs)!)
+While this library started as a quick-and-dirty hack,
+it has been steadily improving thanks to the contributions of a number of community members and [Fjohürs Lykkewe](https://www.youtube.com/watch?v=ef7cTuVUiWs).
+Thank you to everyone who has contributed!

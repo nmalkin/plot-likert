@@ -10,7 +10,7 @@ Installation
 ------------
 
 ```shell
-pip install plot_likert
+pip install plot-likert
 ```
 
 You can also install it directly from Github:

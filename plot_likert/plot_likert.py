@@ -37,6 +37,10 @@ HIDE_EXCESSIVE_TICK_LABELS = True
 PADDING_LEFT = 0.05  # fraction of the total width to use as padding
 
 
+class PlotLikertError(ValueError):
+    pass
+
+
 def plot_counts(
     counts: pd.DataFrame,
     scale: Scale,
@@ -127,7 +131,9 @@ def likert_counts(
 
     def validate(value):
         if (value not in scale) and (not pd.isna(value)):
-            raise ValueError(f"{value} is not in the scale")
+            raise PlotLikertError(
+                f"A response was found with value `{value}`, which is not one of the values in the provided scale: {scale}. If this is unexpected, you might want to double-check for extra whitespace, capitalization, spelling, or type (int versus str)."
+            )
 
     df.applymap(validate)
 

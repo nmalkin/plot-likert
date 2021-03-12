@@ -52,6 +52,10 @@ def plot_counts(
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2
 
+    # scales labels to correct percentages
+    if plot_percentage:
+        counts = likert_percentages(counts, scale, from_count=True)
+
     if scale_middle == len(scale) / 2:
         middles = counts.iloc[:, 0:scale_middle].sum(axis=1)
     else:
@@ -154,14 +158,19 @@ def likert_counts(
 
 
 def likert_percentages(
-    df: pd.DataFrame, scale: Scale, width=30, zero=False
+    df: pd.DataFrame, scale: Scale, width=30, zero=False, counted=False
 ) -> pd.DataFrame:
     """
     Given a dataframe of Likert-style responses, returns a new one
     reporting the percentage of respondents that chose each response.
     Percentages are rounded to integers.
     """
-    counts = likert_counts(df, scale, width, zero)
+
+    # checks if df is already counted
+    if not counted:
+        counts = likert_counts(df, scale, width, zero)
+    else:
+        counts = df
 
     # Warn if the rows have different counts
     # If they do, the percentages shouldn't be compared.

@@ -196,6 +196,7 @@ def plot_likert(
     label_max_width: int = 30,
     drop_zeros: bool = False,
     figsize=None,
+    xtick_interval: typing.Optional[int] = None,
 ) -> matplotlib.axes.Axes:
     """
     The purpose of this function is to combine all of the steps into one 'simple' function.
@@ -215,7 +216,14 @@ def plot_likert(
     else:
         counts = likert_counts(df_fixed, format_scale, label_max_width, drop_zeros)
 
-    return plot_counts(counts, plot_scale, plot_percentage, colors, figsize=figsize)
+    return plot_counts(
+        counts,
+        plot_scale,
+        plot_percentage,
+        colors,
+        figsize=figsize,
+        xtick_interval=xtick_interval,
+    )
 
 
 def raw_scale(df: pd.DataFrame) -> pd.DataFrame:

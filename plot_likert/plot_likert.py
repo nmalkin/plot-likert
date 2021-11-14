@@ -222,6 +222,8 @@ def plot_likert(
     figsize : (tuple(int)) 
         A tuple (width, heigth) that controls size of the final figure - \
         similarly to matplotlib
+    xtick_interval : int
+        Controls the interval between x-axis ticks. 
 
     Returns : matplotlib.axes.Axes 
         Likert plot

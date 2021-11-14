@@ -204,6 +204,27 @@ def plot_likert(
     plot_scale is the scale used for the actual plot.
     label_max_width is the character wrap length for the Y axis.
     drop_zeros indicates whether the data have NA values that should be dropped (True) or not (False).
+
+    Parameters:
+    df : pandas.DataFrame 
+        A dataframe with questions in column names and aswers recorded as cell values.
+    plot_scale : list
+        A list of strings in order for answer options.
+    plot_percentage : bool 
+        Normalize the answer counts.
+    colors : list 
+        A list of colors in hex string or RGB tuples to use for plotting. Attention: if your \
+        colormap doesn't work right try appending transparent ("#ffffff00") in the first place. 
+    label_max_width : int 
+        The width of the y-axis labels.
+    drop_zeros : bool  
+        Removes zeros from df.
+    figsize : (tuple(int)) 
+        A tuple (width, heigth) that controls size of the final figure - \
+        similarly to matplotlib
+
+    Returns : matplotlib.axes.Axes 
+        Likert plot
     """
     if format_scale:
         df_fixed = likert_response(df, format_scale)

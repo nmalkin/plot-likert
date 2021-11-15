@@ -199,7 +199,7 @@ def plot_likert(
     xtick_interval: typing.Optional[int] = None,
 ) -> matplotlib.axes.Axes:
     """
-    The purpose of this function is to combine all of the steps into one 'simple' function.
+    Plot the given Likert-type dataset.
 
     Parameters:
     df : pandas.DataFrame

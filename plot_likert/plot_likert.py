@@ -207,7 +207,7 @@ def plot_likert(
 
     Parameters:
     df : pandas.DataFrame 
-        A dataframe with questions in column names and aswers recorded as cell values.
+        A dataframe with questions in column names and answers recorded as cell values.
     plot_scale : list
         A list of strings in order for answer options.
     plot_percentage : bool 

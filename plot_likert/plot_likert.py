@@ -206,26 +206,26 @@ def plot_likert(
     drop_zeros indicates whether the data have NA values that should be dropped (True) or not (False).
 
     Parameters:
-    df : pandas.DataFrame 
+    df : pandas.DataFrame
         A dataframe with questions in column names and answers recorded as cell values.
     plot_scale : list
         A list of strings in order for answer options.
-    plot_percentage : bool 
+    plot_percentage : bool
         Normalize the answer counts.
-    colors : list 
+    colors : list
         A list of colors in hex string or RGB tuples to use for plotting. Attention: if your \
-        colormap doesn't work right try appending transparent ("#ffffff00") in the first place. 
-    label_max_width : int 
+        colormap doesn't work right try appending transparent ("#ffffff00") in the first place.
+    label_max_width : int
         The width of the y-axis labels.
-    drop_zeros : bool  
+    drop_zeros : bool
         Removes zeros from df.
-    figsize : (tuple(int)) 
+    figsize : (tuple(int))
         A tuple (width, heigth) that controls size of the final figure - \
         similarly to matplotlib
     xtick_interval : int
-        Controls the interval between x-axis ticks. 
+        Controls the interval between x-axis ticks.
 
-    Returns : matplotlib.axes.Axes 
+    Returns : matplotlib.axes.Axes
         Likert plot
     """
     if format_scale:

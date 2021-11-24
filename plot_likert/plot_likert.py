@@ -239,6 +239,9 @@ def plot_likert(
     else:
         counts = likert_counts(df_fixed, format_scale, label_max_width, drop_zeros)
 
+    if drop_zeros:
+        plot_scale = plot_scale[1:]
+
     return plot_counts(
         counts,
         plot_scale,

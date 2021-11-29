@@ -17,6 +17,10 @@ default: Colors = [
     "darkblue",
 ]
 
+# default color scheme with neutral removed
+likert4: Colors = list(plot_likert.colors.default)
+likert4.pop(len(colors4) // 2)
+
 likert5: Colors = ["white", "#d8a539", "#efe0c1", "lightgray", "#bde1dd", "#5ab4ac"]
 
 likert6: Colors = [

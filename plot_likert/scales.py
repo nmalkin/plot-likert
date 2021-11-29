@@ -38,6 +38,15 @@ acceptable5: Scale = [
 ]
 acceptable: Scale = acceptable5
 
+likely5: Scale = [
+    "Very unlikely",
+    "Somewhat unlikely",
+    "Neutral",
+    "Somewhat likely",
+    "Very likely",
+]
+likely: Scale = likely5
+
 scores5_0: Scale = [
     "0",
     "1 - Strongly Disagree",

@@ -49,6 +49,36 @@ def plot_counts(
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
 ) -> matplotlib.axes.Axes:
+    """
+    Plot the given counts of Likert responses.
+
+
+    Parameters
+    ----------
+    counts : pd.DataFrame
+        The given DataFrame should contain the pre-computed counts of responses to a set of Likert-style questions.
+        Its columns represent the total counts in each category, while each row is a different question.
+    scale : list of str
+        The scale used for the plot: an ordered list of strings for each of the answer options.
+    plot_percentage : bool
+        If true, the counts are assumed to be percentages and % marks will be added to the x-axis labels.
+    colors : list of str
+        A list of colors in hex string or RGB tuples to use for plotting.
+        Attention: if your colormap doesn't work right try appending transparent ("#ffffff00") in the first place.
+    figsize : tuple of (int, int)
+        A tuple (width, heigth) that controls size of the final figure - similarly to matplotlib
+    xtick_interval : int, optional
+        Controls the interval between x-axis ticks.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The axes of the generated Likert plot
+
+    See Also
+    --------
+    plot_likert : aggregate raw responses then plot them. Most often, you'll want to use that function instead of calling this one directly.
+    """
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2
 

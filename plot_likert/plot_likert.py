@@ -49,7 +49,6 @@ def plot_counts(
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
     compute_percentages: bool = False,
-    counts_are_percentages: bool = False,
 ) -> matplotlib.axes.Axes:
     """
     Plot the given counts of Likert responses.
@@ -63,10 +62,8 @@ def plot_counts(
     scale : list of str
         The scale used for the plot: an ordered list of strings for each of the answer options.
     plot_percentage : bool, optional
-        DEPRECATED: use `counts_are_percentages` instead.
-        That parameter is named more descriptively but retains this one's behavior:
+        DEPRECATED: use `compute_percentages` instead.
         If true, the counts are assumed to be percentages and % marks will be added to the x-axis labels.
-        If both `plot_percentage` and `counts_are_percentages` are specified, the former overrides the latter.
     colors : list of str
         A list of colors in hex string or RGB tuples to use for plotting.
         Attention: if your colormap doesn't work right try appending transparent ("#ffffff00") in the first place.
@@ -76,9 +73,6 @@ def plot_counts(
         Controls the interval between x-axis ticks.
     compute_percentages: bool = False,
         Convert the given response counts to percentages and display the counts as percentages in the plot.
-    counts_are_percentages: bool = False,
-        If true, the counts are assumed to be percentages and % marks will be added to the x-axis labels.
-        If `compute_percentages` is True, this parameter is ignored.
 
     Returns
     -------
@@ -91,15 +85,17 @@ def plot_counts(
     """
     if plot_percentage is not None:
         warn(
-            "parameter `plot_percentage` for `plot_likert.likert_counts` is deprecated, use `counts_are_percentages` instead",
+            "parameter `plot_percentage` for `plot_likert.likert_counts` is deprecated, set it to None and use `compute_percentages` instead",
             FutureWarning,
         )
         counts_are_percentages = plot_percentage
-
-    # Re-compute counts as percentages, if requested
-    if compute_percentages:
-        counts = _compute_counts_percentage(counts)
-        counts_are_percentages = True
+    else:
+        # Re-compute counts as percentages, if requested
+        if compute_percentages:
+            counts = _compute_counts_percentage(counts)
+            counts_are_percentages = True
+        else:
+            counts_are_percentages = False
 
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2

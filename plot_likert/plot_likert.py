@@ -201,31 +201,34 @@ def plot_likert(
     """
     Plot the given Likert-type dataset.
 
-    Parameters:
+    Parameters
+    ----------
     df : pandas.DataFrame
         A dataframe with questions in column names and answers recorded as cell values.
     plot_scale : list
         The scale used for the actual plot: a list of strings in order for answer options.
     plot_percentage : bool
         Normalize the answer counts.
-    format_scale : list
+    format_scale : list of str
         Optional scale used to reformat the responses: \
         if your responses are numeric values, you can pass in this scale to replace them with text. \
         If your dataset has NA values, this list must have a corresponding 0/empty value at the beginning.
-    colors : list
+    colors : list of str
         A list of colors in hex string or RGB tuples to use for plotting. Attention: if your \
         colormap doesn't work right try appending transparent ("#ffffff00") in the first place.
     label_max_width : int
         The character wrap length of the y-axis labels.
     drop_zeros : bool
         Indicates whether the data have NA values that should be dropped (True) or not (False).
-    figsize : (tuple(int))
+    figsize : tuple of (int, int)
         A tuple (width, heigth) that controls size of the final figure - \
         similarly to matplotlib
     xtick_interval : int
         Controls the interval between x-axis ticks.
 
-    Returns : matplotlib.axes.Axes
+    Returns
+    -------
+    matplotlib.axes.Axes
         Likert plot
     """
     if format_scale:

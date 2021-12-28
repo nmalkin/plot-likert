@@ -44,10 +44,11 @@ class PlotLikertError(ValueError):
 def plot_counts(
     counts: pd.DataFrame,
     scale: Scale,
-    plot_percentage: bool = False,
+    plot_percentage: typing.Optional[bool] = None,
     colors: colors.Colors = colors.default,
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
+    counts_are_percentages: bool = False,
 ) -> matplotlib.axes.Axes:
     """
     Plot the given counts of Likert responses.
@@ -60,8 +61,11 @@ def plot_counts(
         Its columns represent the total counts in each category, while each row is a different question.
     scale : list of str
         The scale used for the plot: an ordered list of strings for each of the answer options.
-    plot_percentage : bool
+    plot_percentage : bool, optional
+        DEPRECATED: use `counts_are_percentages` instead.
+        That parameter is named more descriptively but retains this one's behavior:
         If true, the counts are assumed to be percentages and % marks will be added to the x-axis labels.
+        If both `plot_percentage` and `counts_are_percentages` are specified, the former overrides the latter.
     colors : list of str
         A list of colors in hex string or RGB tuples to use for plotting.
         Attention: if your colormap doesn't work right try appending transparent ("#ffffff00") in the first place.
@@ -69,6 +73,8 @@ def plot_counts(
         A tuple (width, heigth) that controls size of the final figure - similarly to matplotlib
     xtick_interval : int, optional
         Controls the interval between x-axis ticks.
+    counts_are_percentages: bool = False,
+        If true, the counts are assumed to be percentages and % marks will be added to the x-axis labels.
 
     Returns
     -------
@@ -79,6 +85,13 @@ def plot_counts(
     --------
     plot_likert : aggregate raw responses then plot them. Most often, you'll want to use that function instead of calling this one directly.
     """
+    if plot_percentage is not None:
+        warn(
+            "parameter `plot_percentage` for `plot_likert.likert_counts` is deprecated, use `counts_are_percentages` instead",
+            FutureWarning,
+        )
+        counts_are_percentages = plot_percentage
+
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2
 
@@ -135,12 +148,12 @@ def plot_counts(
         total_max = counts.sum(axis="columns").max()
         xlabels = ["" if label > total_max else label for label in xlabels]
 
-    if plot_percentage:
+    if counts_are_percentages:
         xlabels = [str(label) + "%" if label != "" else "" for label in xlabels]
 
     ax.set_xticks(xvalues)
     ax.set_xticklabels(xlabels)
-    if plot_percentage is True:
+    if counts_are_percentages is True:
         ax.set_xlabel("Percentage of Responses")
     else:
         ax.set_xlabel("Number of Responses")

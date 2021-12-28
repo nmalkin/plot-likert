@@ -289,12 +289,12 @@ def plot_likert(
         plot_scale = plot_scale[1:]
 
     return plot_counts(
-        counts,
-        plot_scale,
-        plot_percentage,
-        colors,
+        counts=counts,
+        scale=plot_scale,
+        colors=colors,
         figsize=figsize,
         xtick_interval=xtick_interval,
+        counts_are_percentages=plot_percentage,
     )
 
 

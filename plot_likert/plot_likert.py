@@ -98,7 +98,7 @@ def plot_counts(
 
     # Re-compute counts as percentages, if requested
     if compute_percentages:
-        counts = counts.divide(counts.sum(axis="columns"), axis="rows") * 100.0
+        counts = _compute_counts_percentage(counts)
         counts_are_percentages = True
 
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
@@ -213,6 +213,13 @@ def likert_percentages(
     reporting the percentage of respondents that chose each response.
     Percentages are rounded to integers.
     """
+
+    # This internal function is no longer used; it is therefore deprecated and may be removed in future versions.
+    warn(
+        "plot_likert internal function `likert_percentages` may be removed in future versions",
+        FutureWarning,
+    )
+
     counts = likert_counts(df, scale, width, zero)
 
     # Warn if the rows have different counts
@@ -226,6 +233,23 @@ def likert_percentages(
         )
 
     return counts.apply(lambda row: row / row.sum(), axis=1).applymap(lambda v: 100 * v)
+
+
+def _compute_counts_percentage(counts: pd.DataFrame) -> pd.DataFrame:
+    """
+    Given a dataframe of response counts, return a new one
+    with the response counts converted to percentages.
+    """
+    # Warn if the rows have different counts
+    # If they do, the percentages shouldn't be compared.
+    responses_per_question = counts.sum(axis="columns")
+    responses_to_first_question = responses_per_question[0]
+    responses_same = responses_per_question == responses_to_first_question
+    if not responses_same.all():
+        warn(
+            "In your data, not all questions have the same number of responses. i.e., different numbers of people answered each question. Therefore, the percentages aren't directly comparable: X% for one question represents a different number of responses than X% for another question, yet they will appear the same in the percentage graph. This may be misleading to your reader."
+        )
+    return counts.divide(counts.sum(axis="columns"), axis="rows") * 100
 
 
 def likert_response(df: pd.DataFrame, scale: Scale) -> pd.DataFrame:
@@ -289,10 +313,7 @@ def plot_likert(
         df_fixed = df
         format_scale = plot_scale
 
-    if plot_percentage:
-        counts = likert_percentages(df_fixed, format_scale, label_max_width, drop_zeros)
-    else:
-        counts = likert_counts(df_fixed, format_scale, label_max_width, drop_zeros)
+    counts = likert_counts(df_fixed, format_scale, label_max_width, drop_zeros)
 
     if drop_zeros:
         plot_scale = plot_scale[1:]
@@ -303,7 +324,7 @@ def plot_likert(
         colors=colors,
         figsize=figsize,
         xtick_interval=xtick_interval,
-        counts_are_percentages=plot_percentage,
+        compute_percentages=plot_percentage,
     )
 
 

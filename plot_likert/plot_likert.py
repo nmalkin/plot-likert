@@ -48,6 +48,7 @@ def plot_counts(
     colors: colors.Colors = colors.default,
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
+    compute_percentages: bool = False,
     counts_are_percentages: bool = False,
 ) -> matplotlib.axes.Axes:
     """
@@ -73,8 +74,11 @@ def plot_counts(
         A tuple (width, heigth) that controls size of the final figure - similarly to matplotlib
     xtick_interval : int, optional
         Controls the interval between x-axis ticks.
+    compute_percentages: bool = False,
+        Convert the given response counts to percentages and display the counts as percentages in the plot.
     counts_are_percentages: bool = False,
         If true, the counts are assumed to be percentages and % marks will be added to the x-axis labels.
+        If `compute_percentages` is True, this parameter is ignored.
 
     Returns
     -------
@@ -91,6 +95,11 @@ def plot_counts(
             FutureWarning,
         )
         counts_are_percentages = plot_percentage
+
+    # Re-compute counts as percentages, if requested
+    if compute_percentages:
+        counts = counts.divide(counts.sum(axis="columns"), axis="rows") * 100.0
+        counts_are_percentages = True
 
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2

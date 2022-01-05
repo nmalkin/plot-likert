@@ -57,6 +57,7 @@ def get_interval_for_scale(tick_space: int, max_width: int) -> int:
     return the "best" interval to use between tick marks.
     """
     min_ticks = tick_space - 5
+    min_ticks = 1 if min_ticks <= 0 else min_ticks
     max_ticks = tick_space + 2
     min_interval = max(
         1, int(max_width / max_ticks)

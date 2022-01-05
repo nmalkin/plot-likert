@@ -49,6 +49,8 @@ def plot_counts(
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
     compute_percentages: bool = False,
+    ax: typing.Optional[matplotlib.axes.Axes] = None,
+    **kwargs
 ) -> matplotlib.axes.Axes:
     """
     Plot the given counts of Likert responses.
@@ -73,6 +75,10 @@ def plot_counts(
         Controls the interval between x-axis ticks.
     compute_percentages: bool = False,
         Convert the given response counts to percentages and display the counts as percentages in the plot.
+    ax: matplotlib.axes.Axes, optional
+        An axes of the current figure.
+    **kwargs
+        Options to pass to pandas plotting method.
 
     Returns
     -------
@@ -121,16 +127,16 @@ def plot_counts(
     reversed_rows = padded_counts.iloc[::-1]
 
     # Start putting together the plot
-    ax = reversed_rows.plot.barh(stacked=True, color=colors, figsize=figsize)
+    axes = reversed_rows.plot.barh(stacked=True, color=colors, figsize=figsize, ax=ax, **kwargs)
 
     # Draw center line
-    center_line = ax.axvline(center, linestyle="--", color="black", alpha=0.5)
+    center_line = axes.axvline(center, linestyle="--", color="black", alpha=0.5)
     center_line.set_zorder(-1)
 
     # Compute and show x labels
     max_width = int(round(padded_counts.sum(axis=1).max()))
     if xtick_interval is None:
-        num_ticks = ax.xaxis.get_tick_space()
+        num_ticks = axes.xaxis.get_tick_space()
         interval = interval_helper.get_interval_for_scale(num_ticks, max_width)
     else:
         interval = xtick_interval
@@ -156,17 +162,18 @@ def plot_counts(
     if counts_are_percentages:
         xlabels = [str(label) + "%" if label != "" else "" for label in xlabels]
 
-    ax.set_xticks(xvalues)
-    ax.set_xticklabels(xlabels)
+    axes.set_xticks(xvalues)
+    axes.set_xticklabels(xlabels)
     if counts_are_percentages is True:
-        ax.set_xlabel("Percentage of Responses")
+        axes.set_xlabel("Percentage of Responses")
     else:
-        ax.set_xlabel("Number of Responses")
+        axes.set_xlabel("Number of Responses")
 
-    # Control legend
-    plt.legend(bbox_to_anchor=(1.05, 1))
+    # Reposition the legend if present
+    if axes.get_legend():
+        axes.legend(bbox_to_anchor=(1.05, 1))
 
-    return ax
+    return axes
 
 
 def likert_counts(
@@ -269,6 +276,8 @@ def plot_likert(
     drop_zeros: bool = False,
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
+    ax=None,
+    **kwargs
 ) -> matplotlib.axes.Axes:
     """
     Plot the given Likert-type dataset.
@@ -297,6 +306,10 @@ def plot_likert(
         similarly to matplotlib
     xtick_interval : int
         Controls the interval between x-axis ticks.
+    ax: matplotlib.axes.Axes, optional
+        An axes of the current figure.
+    **kwargs
+        Options to pass to pandas plotting method.
 
     Returns
     -------
@@ -321,6 +334,8 @@ def plot_likert(
         figsize=figsize,
         xtick_interval=xtick_interval,
         compute_percentages=plot_percentage,
+        ax=ax,
+        **kwargs
     )
 
 

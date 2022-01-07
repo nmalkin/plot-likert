@@ -10,7 +10,8 @@ import numpy as np
 
 def get_next_interval_divisor() -> typing.Generator[int, None, None]:
     """
-    A generator that yields 5, and then successive powers of 10
+    A generator that yields "useful" interval values.
+    These are 5, 10, 25, 50, and then successive powers of 10
     """
     yield 5
     yield 10

@@ -11,9 +11,15 @@ class TestIntervalCalculations(unittest.TestCase):
         divisor = generator.__next__()
         self.assertEqual(10, divisor)
         divisor = generator.__next__()
+        self.assertEqual(25, divisor)
+        divisor = generator.__next__()
+        self.assertEqual(50, divisor)
+        divisor = generator.__next__()
         self.assertEqual(100, divisor)
         divisor = generator.__next__()
         self.assertEqual(1000, divisor)
+        divisor = generator.__next__()
+        self.assertEqual(10000, divisor)
 
     def test_get_biggest_divisor(self):
         self.assertEqual(1, get_biggest_divisor(4))

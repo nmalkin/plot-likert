@@ -49,7 +49,6 @@ def plot_counts(
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
     compute_percentages: bool = False,
-    ax: typing.Optional[matplotlib.axes.Axes] = None,
     **kwargs
 ) -> matplotlib.axes.Axes:
     """
@@ -75,8 +74,6 @@ def plot_counts(
         Controls the interval between x-axis ticks.
     compute_percentages: bool = False,
         Convert the given response counts to percentages and display the counts as percentages in the plot.
-    ax: matplotlib.axes.Axes, optional
-        An axes of the current figure.
     **kwargs
         Options to pass to pandas plotting method.
 
@@ -127,7 +124,7 @@ def plot_counts(
     reversed_rows = padded_counts.iloc[::-1]
 
     # Start putting together the plot
-    axes = reversed_rows.plot.barh(stacked=True, color=colors, figsize=figsize, ax=ax, **kwargs)
+    axes = reversed_rows.plot.barh(stacked=True, color=colors, figsize=figsize, **kwargs)
 
     # Draw center line
     center_line = axes.axvline(center, linestyle="--", color="black", alpha=0.5)
@@ -276,7 +273,6 @@ def plot_likert(
     drop_zeros: bool = False,
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
-    ax=None,
     **kwargs
 ) -> matplotlib.axes.Axes:
     """
@@ -306,8 +302,6 @@ def plot_likert(
         similarly to matplotlib
     xtick_interval : int
         Controls the interval between x-axis ticks.
-    ax: matplotlib.axes.Axes, optional
-        An axes of the current figure.
     **kwargs
         Options to pass to pandas plotting method.
 
@@ -334,7 +328,6 @@ def plot_likert(
         figsize=figsize,
         xtick_interval=xtick_interval,
         compute_percentages=plot_percentage,
-        ax=ax,
         **kwargs
     )
 

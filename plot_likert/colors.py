@@ -21,7 +21,7 @@ default: Colors = [
 likert4: Colors = list(default)
 likert4.pop(len(likert4) // 2)
 
-likert5: Colors = ["white", "#d8a539", "#efe0c1", "lightgray", "#bde1dd", "#5ab4ac"]
+likert5: Colors = [TRANSPARENT, "#d8a539", "#efe0c1", "lightgray", "#bde1dd", "#5ab4ac"]
 
 likert6: Colors = [
     TRANSPARENT,

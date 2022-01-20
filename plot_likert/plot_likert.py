@@ -174,12 +174,18 @@ def plot_counts(
 
 
 def likert_counts(
-    df: pd.DataFrame, scale: Scale, label_max_width=30, drop_zeros=False
+    df: typing.Union[pd.DataFrame, pd.Series],
+    scale: Scale,
+    label_max_width=30,
+    drop_zeros=False,
 ) -> pd.DataFrame:
     """
     Given a dataframe of Likert-style responses, returns a count of each response,
     validating them against the provided scale.
     """
+
+    if type(df) == pd.core.series.Series:
+        df = df.to_frame()
 
     def validate(value):
         if (value not in scale) and (not pd.isna(value)):
@@ -264,7 +270,7 @@ def likert_response(df: pd.DataFrame, scale: Scale) -> pd.DataFrame:
 
 
 def plot_likert(
-    df: pd.DataFrame,
+    df: typing.Union[pd.DataFrame, pd.Series],
     plot_scale: Scale,
     plot_percentage: bool = False,
     format_scale: Scale = None,
@@ -280,7 +286,7 @@ def plot_likert(
 
     Parameters
     ----------
-    df : pandas.DataFrame
+    df : pandas.DataFrame or pandas.Series
         A dataframe with questions in column names and answers recorded as cell values.
     plot_scale : list
         The scale used for the actual plot: a list of strings in order for answer options.

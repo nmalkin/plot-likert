@@ -34,7 +34,7 @@ import plot_likert.colors as colors
 import plot_likert.interval as interval_helper
 
 HIDE_EXCESSIVE_TICK_LABELS = True
-PADDING_LEFT = 0.05  # fraction of the total width to use as padding
+PADDING_LEFT = 0.02  # fraction of the total width to use as padding
 PADDING_RIGHT = 0.04  # fraction of the total width to use as padding
 
 

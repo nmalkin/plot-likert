@@ -20,7 +20,7 @@ def get_next_interval_divisor() -> typing.Generator[int, None, None]:
     i = 1
     while True:
         i += 1
-        yield 10 ** i
+        yield 10**i
 
 
 def get_biggest_divisor(n: int) -> int:

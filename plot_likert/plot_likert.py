@@ -49,7 +49,7 @@ def plot_counts(
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
     compute_percentages: bool = False,
-    **kwargs
+    **kwargs,
 ) -> matplotlib.axes.Axes:
     """
     Plot the given counts of Likert responses.
@@ -124,7 +124,9 @@ def plot_counts(
     reversed_rows = padded_counts.iloc[::-1]
 
     # Start putting together the plot
-    axes = reversed_rows.plot.barh(stacked=True, color=colors, figsize=figsize, **kwargs)
+    axes = reversed_rows.plot.barh(
+        stacked=True, color=colors, figsize=figsize, **kwargs
+    )
 
     # Draw center line
     center_line = axes.axvline(center, linestyle="--", color="black", alpha=0.5)
@@ -279,7 +281,7 @@ def plot_likert(
     drop_zeros: bool = False,
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
-    **kwargs
+    **kwargs,
 ) -> matplotlib.axes.Axes:
     """
     Plot the given Likert-type dataset.
@@ -334,7 +336,7 @@ def plot_likert(
         figsize=figsize,
         xtick_interval=xtick_interval,
         compute_percentages=plot_percentage,
-        **kwargs
+        **kwargs,
     )
 
 

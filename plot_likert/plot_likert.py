@@ -35,6 +35,7 @@ import plot_likert.interval as interval_helper
 
 HIDE_EXCESSIVE_TICK_LABELS = True
 PADDING_LEFT = 0.05  # fraction of the total width to use as padding
+PADDING_RIGHT = 0.04  # fraction of the total width to use as padding
 
 
 class PlotLikertError(ValueError):
@@ -171,6 +172,12 @@ def plot_counts(
     # Reposition the legend if present
     if axes.get_legend():
         axes.legend(bbox_to_anchor=(1.05, 1))
+
+    # Tighten the padding on the right of the figure
+    counts_sum = counts.sum(axis="columns").max()
+    padding_right = counts_sum * PADDING_RIGHT
+    x_min, x_max = axes.get_xlim()
+    axes.set_xlim(x_min, x_max - padding_right)
 
     return axes
 

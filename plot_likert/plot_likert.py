@@ -197,14 +197,19 @@ def plot_counts(
         bar_size_cutoff = counts_sum * BAR_LABEL_SIZE_CUTOFF
 
         for segment in axes.containers[1:]:  # the first container is the padding
-            labels = axes.bar_label(
-                segment,
-                label_type="center",
-                fmt=bar_label_format,
-                padding=0,
-                color=bar_labels_color,
-                weight="bold",
-            )
+            try:
+                labels = axes.bar_label(
+                    segment,
+                    label_type="center",
+                    fmt=bar_label_format,
+                    padding=0,
+                    color=bar_labels_color,
+                    weight="bold",
+                )
+            except AttributeError:
+                raise PlotLikertError(
+                    "Rendering bar labels requires matplotlib version 3.4.0 or higher"
+                )
 
             # Remove labels that don't fit because the bars are too small
             for label in labels:

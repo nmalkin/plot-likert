@@ -8,14 +8,17 @@ This is a library to visualize results from [Likert-type](https://en.wikipedia.o
 
 Installation
 ------------
+Install the latest stable version from PyPI:
 
 ```shell
 pip install plot-likert
 ```
 
-You can also install it directly from Github:
+To get the latest development version:
 
 ```shell
+pip install --pre plot-likert
+# OR
 pip install git+https://github.com/nmalkin/plot-likert.git
 ```
 
@@ -40,7 +43,7 @@ Usage and sample figures
 ------------------------
 
 To learn about how to use this library and see more example figures,
-[visit the User Guide, which is a Jupyter notebook](docs/guide.ipynb).
+[visit the User Guide, which is a Jupyter notebook](https://github.com/nmalkin/plot-likert/blob/stable/docs/guide.ipynb).
 
 Want to see even more examples? [Look here](docs/lots_of_random_figures.ipynb)!
 

@@ -72,7 +72,7 @@ def plot_counts(
         A tuple (width, heigth) that controls size of the final figure - similarly to matplotlib
     xtick_interval : int, optional
         Controls the interval between x-axis ticks.
-    compute_percentages: bool = False,
+    compute_percentages : bool, default = True,
         Convert the given response counts to percentages and display the counts as percentages in the plot.
     **kwargs
         Options to pass to pandas plotting method.

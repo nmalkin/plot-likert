@@ -36,6 +36,10 @@ import plot_likert.interval as interval_helper
 HIDE_EXCESSIVE_TICK_LABELS = True
 PADDING_LEFT = 0.02  # fraction of the total width to use as padding
 PADDING_RIGHT = 0.04  # fraction of the total width to use as padding
+BAR_LABEL_FORMAT = (
+    "%d"  # if showing labels, how should the number be formatted? e.g., "%.2g"
+)
+BAR_LABEL_SIZE_CUTOFF = 0.05
 
 
 class PlotLikertError(ValueError):
@@ -50,6 +54,8 @@ def plot_counts(
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
     compute_percentages: bool = False,
+    bar_labels: bool = False,
+    bar_labels_color: str = "white",
     **kwargs,
 ) -> matplotlib.axes.Axes:
     """
@@ -75,6 +81,10 @@ def plot_counts(
         Controls the interval between x-axis ticks.
     compute_percentages : bool, default = True,
         Convert the given response counts to percentages and display the counts as percentages in the plot.
+    bar_labels : bool, default = False
+        Show a label with the value of each bar segment on top of it
+    bar_labels_color: str, default = "white"
+        If showing bar labels, use this color for the text
     **kwargs
         Options to pass to pandas plotting method.
 
@@ -180,6 +190,30 @@ def plot_counts(
     padding_right = counts_sum * PADDING_RIGHT
     x_min, x_max = axes.get_xlim()
     axes.set_xlim(x_min - padding_left, x_max - padding_right)
+
+    # Add labels
+    if bar_labels:
+        bar_label_format = BAR_LABEL_FORMAT + ("%%" if compute_percentages else "")
+        bar_size_cutoff = counts_sum * BAR_LABEL_SIZE_CUTOFF
+
+        for segment in axes.containers[1:]:  # the first container is the padding
+            labels = axes.bar_label(
+                segment,
+                label_type="center",
+                fmt=bar_label_format,
+                padding=0,
+                color=bar_labels_color,
+                weight="bold",
+            )
+
+            # Remove labels that don't fit because the bars are too small
+            for label in labels:
+                label_text = label.get_text()
+                if compute_percentages:
+                    label_text = label_text.rstrip("%")
+                number = float(label_text)
+                if number < bar_size_cutoff:
+                    label.set_text("")
 
     return axes
 
@@ -290,6 +324,8 @@ def plot_likert(
     drop_zeros: bool = False,
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
+    bar_labels: bool = False,
+    bar_labels_color: str = "white",
     **kwargs,
 ) -> matplotlib.axes.Axes:
     """
@@ -319,6 +355,10 @@ def plot_likert(
         similarly to matplotlib
     xtick_interval : int
         Controls the interval between x-axis ticks.
+    bar_labels : bool, default = False
+        Show a label with the value of each bar segment on top of it
+    bar_labels_color: str, default = "white"
+        If showing bar labels, use this color for the text
     **kwargs
         Options to pass to pandas plotting method.
 
@@ -345,6 +385,8 @@ def plot_likert(
         figsize=figsize,
         xtick_interval=xtick_interval,
         compute_percentages=plot_percentage,
+        bar_labels=bar_labels,
+        bar_labels_color=bar_labels_color,
         **kwargs,
     )
 

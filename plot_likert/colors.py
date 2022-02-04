@@ -17,6 +17,8 @@ default: Colors = [
     "darkblue",
 ]
 
+default_label_color = "white"
+
 # default color scheme with neutral removed
 likert4: Colors = list(default)
 likert4.pop(len(likert4) // 2)

@@ -112,8 +112,7 @@ def plot_counts(
             + counts.iloc[:, scale_middle] / 2
         )
 
-    padding_left = PADDING_LEFT * counts.sum(axis="columns").max()
-    center = middles.max() + padding_left
+    center = middles.max()
 
     padding_values = (middles - center).abs()
     padded_counts = pd.concat([padding_values, counts], axis=1)
@@ -173,11 +172,14 @@ def plot_counts(
     if axes.get_legend():
         axes.legend(bbox_to_anchor=(1.05, 1))
 
-    # Tighten the padding on the right of the figure
+    # Adjust padding
     counts_sum = counts.sum(axis="columns").max()
+    # Pad the bars on the left (so there's a gap between the axis and the first section)
+    padding_left = counts_sum * PADDING_LEFT
+    # Tighten the padding on the right of the figure
     padding_right = counts_sum * PADDING_RIGHT
     x_min, x_max = axes.get_xlim()
-    axes.set_xlim(x_min, x_max - padding_right)
+    axes.set_xlim(x_min - padding_left, x_max - padding_right)
 
     return axes
 

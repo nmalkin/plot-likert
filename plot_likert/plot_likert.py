@@ -30,7 +30,7 @@ except RuntimeError as err:
     raise err
 
 from plot_likert.scales import Scale
-import plot_likert.colors as colors
+import plot_likert.colors as builtin_colors
 import plot_likert.interval as interval_helper
 
 HIDE_EXCESSIVE_TICK_LABELS = True
@@ -46,7 +46,7 @@ def plot_counts(
     counts: pd.DataFrame,
     scale: Scale,
     plot_percentage: typing.Optional[bool] = None,
-    colors: colors.Colors = colors.default,
+    colors: builtin_colors.Colors = builtin_colors.default,
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
     compute_percentages: bool = False,
@@ -285,7 +285,7 @@ def plot_likert(
     plot_scale: Scale,
     plot_percentage: bool = False,
     format_scale: Scale = None,
-    colors: colors.Colors = colors.default,
+    colors: builtin_colors.Colors = builtin_colors.default,
     label_max_width: int = 30,
     drop_zeros: bool = False,
     figsize=None,

@@ -17,6 +17,15 @@ default: Colors = [
     "darkblue",
 ]
 
+default_with_darker_neutral: Colors = [
+    TRANSPARENT,
+    "firebrick",
+    "lightcoral",
+    "silver",
+    "cornflowerblue",
+    "darkblue",
+]
+
 default_label_color = "white"
 
 # default color scheme with neutral removed

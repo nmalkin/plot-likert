@@ -238,7 +238,7 @@ def likert_counts(
         df = df.to_frame()
 
     def validate(value):
-        if (value not in scale) and (not pd.isna(value)):
+        if (not pd.isna(value)) and (value not in scale):
             raise PlotLikertError(
                 f"A response was found with value `{value}`, which is not one of the values in the provided scale: {scale}. If this is unexpected, you might want to double-check for extra whitespace, capitalization, spelling, or type (int versus str)."
             )

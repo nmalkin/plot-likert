@@ -56,6 +56,7 @@ def plot_counts(
     compute_percentages: bool = False,
     bar_labels: bool = False,
     bar_labels_color: str = "white",
+    ax: typing.Optional[matplotlib.axes.Axes] = None,
     **kwargs,
 ) -> matplotlib.axes.Axes:
     """
@@ -85,6 +86,8 @@ def plot_counts(
         Show a label with the value of each bar segment on top of it
     bar_labels_color: str, default = "white"
         If showing bar labels, use this color for the text
+    ax: matplotlib.axes.Axes, optional
+        The axes on which to plot
     **kwargs
         Options to pass to pandas plotting method.
 
@@ -134,18 +137,18 @@ def plot_counts(
     reversed_rows = padded_counts.iloc[::-1]
 
     # Start putting together the plot
-    axes = reversed_rows.plot.barh(
-        stacked=True, color=colors, figsize=figsize, **kwargs
+    ax = reversed_rows.plot.barh(
+        stacked=True, color=colors, figsize=figsize, ax=ax, **kwargs
     )
 
     # Draw center line
-    center_line = axes.axvline(center, linestyle="--", color="black", alpha=0.5)
+    center_line = ax.axvline(center, linestyle="--", color="black", alpha=0.5)
     center_line.set_zorder(-1)
 
     # Compute and show x labels
     max_width = int(round(padded_counts.sum(axis=1).max()))
     if xtick_interval is None:
-        num_ticks = axes.xaxis.get_tick_space()
+        num_ticks = ax.xaxis.get_tick_space()
         interval = interval_helper.get_interval_for_scale(num_ticks, max_width)
     else:
         interval = xtick_interval
@@ -171,16 +174,16 @@ def plot_counts(
     if counts_are_percentages:
         xlabels = [str(label) + "%" if label != "" else "" for label in xlabels]
 
-    axes.set_xticks(xvalues)
-    axes.set_xticklabels(xlabels)
+    ax.set_xticks(xvalues)
+    ax.set_xticklabels(xlabels)
     if counts_are_percentages is True:
-        axes.set_xlabel("Percentage of Responses")
+        ax.set_xlabel("Percentage of Responses")
     else:
-        axes.set_xlabel("Number of Responses")
+        ax.set_xlabel("Number of Responses")
 
     # Reposition the legend if present
-    if axes.get_legend():
-        axes.legend(bbox_to_anchor=(1.05, 1))
+    if ax.get_legend():
+        ax.legend(bbox_to_anchor=(1.05, 1))
 
     # Adjust padding
     counts_sum = counts.sum(axis="columns").max()
@@ -188,17 +191,17 @@ def plot_counts(
     padding_left = counts_sum * PADDING_LEFT
     # Tighten the padding on the right of the figure
     padding_right = counts_sum * PADDING_RIGHT
-    x_min, x_max = axes.get_xlim()
-    axes.set_xlim(x_min - padding_left, x_max - padding_right)
+    x_min, x_max = ax.get_xlim()
+    ax.set_xlim(x_min - padding_left, x_max - padding_right)
 
     # Add labels
     if bar_labels:
         bar_label_format = BAR_LABEL_FORMAT + ("%%" if compute_percentages else "")
         bar_size_cutoff = counts_sum * BAR_LABEL_SIZE_CUTOFF
 
-        for segment in axes.containers[1:]:  # the first container is the padding
+        for segment in ax.containers[1:]:  # the first container is the padding
             try:
-                labels = axes.bar_label(
+                labels = ax.bar_label(
                     segment,
                     label_type="center",
                     fmt=bar_label_format,
@@ -220,7 +223,7 @@ def plot_counts(
                 if number < bar_size_cutoff:
                     label.set_text("")
 
-    return axes
+    return ax
 
 
 def likert_counts(
@@ -331,6 +334,7 @@ def plot_likert(
     xtick_interval: typing.Optional[int] = None,
     bar_labels: bool = False,
     bar_labels_color: str = "white",
+    ax: typing.Optional[matplotlib.axes.Axes] = None,
     **kwargs,
 ) -> matplotlib.axes.Axes:
     """
@@ -364,6 +368,8 @@ def plot_likert(
         Show a label with the value of each bar segment on top of it
     bar_labels_color: str, default = "white"
         If showing bar labels, use this color for the text
+    ax: matplotlib.axes.Axes, optional
+        The axes on which to plot
     **kwargs
         Options to pass to pandas plotting method.
 
@@ -392,6 +398,7 @@ def plot_likert(
         compute_percentages=plot_percentage,
         bar_labels=bar_labels,
         bar_labels_color=bar_labels_color,
+        ax=ax,
         **kwargs,
     )
 

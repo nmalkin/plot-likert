@@ -270,12 +270,6 @@ def likert_percentages(
     Percentages are rounded to integers.
     """
 
-    # This internal function is no longer used; it is therefore deprecated and may be removed in future versions.
-    warn(
-        "plot_likert internal function `likert_percentages` may be removed in future versions",
-        FutureWarning,
-    )
-
     counts = likert_counts(df, scale, width, zero)
 
     # Warn if the rows have different counts

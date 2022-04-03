@@ -3,6 +3,9 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open("requirements.txt", "r") as f:
+    requirements = f.read().splitlines()
+
 setuptools.setup(
     name="plot-likert",
     version="0.3.7.1",
@@ -21,9 +24,5 @@ setuptools.setup(
         "Topic :: Scientific/Engineering :: Visualization"
     ],
     python_requires='>=3.6',
-    install_requires=[
-        'matplotlib',
-        'numpy',
-        'pandas',
-    ],
+    install_requires=requirements,
 )

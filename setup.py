@@ -13,7 +13,7 @@ setuptools.setup(
     description="Library to visualize results from Likert-style survey questions",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    keywords = 'plot graph visualize likert survey matplotlib',
+    keywords="plot graph visualize likert survey matplotlib",
     url="https://github.com/nmalkin/plot-likert",
     packages=setuptools.find_packages(),
     classifiers=[
@@ -21,8 +21,8 @@ setuptools.setup(
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
         "Development Status :: 3 - Alpha",
-        "Topic :: Scientific/Engineering :: Visualization"
+        "Topic :: Scientific/Engineering :: Visualization",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
     install_requires=requirements,
 )

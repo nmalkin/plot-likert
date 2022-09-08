@@ -56,6 +56,7 @@ def plot_counts(
     compute_percentages: bool = False,
     bar_labels: bool = False,
     bar_labels_color: str = "white",
+    pad_100: bool = False,
     **kwargs,
 ) -> matplotlib.axes.Axes:
     """
@@ -85,6 +86,8 @@ def plot_counts(
         Show a label with the value of each bar segment on top of it
     bar_labels_color: str, default = "white"
         If showing bar labels, use this color for the text
+    pad_100 : bool, default = False
+        Set the x axis (when plotting the %) to +/- 100%.
     **kwargs
         Options to pass to pandas plotting method.
 
@@ -123,6 +126,8 @@ def plot_counts(
         )
 
     center = middles.max()
+    if compute_percentages and pad_100:
+        center = 100
 
     padding_values = (middles - center).abs()
     padded_counts = pd.concat([padding_values, counts], axis=1)
@@ -144,6 +149,9 @@ def plot_counts(
 
     # Compute and show x labels
     max_width = int(round(padded_counts.sum(axis=1).max()))
+    if compute_percentages and pad_100:
+        max_width = 201
+
     if xtick_interval is None:
         num_ticks = axes.xaxis.get_tick_space()
         interval = interval_helper.get_interval_for_scale(num_ticks, max_width)

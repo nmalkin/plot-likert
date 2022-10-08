@@ -60,10 +60,10 @@ def get_interval_for_scale(tick_space: int, max_width: int) -> int:
     min_ticks = tick_space - 5
     min_ticks = 1 if min_ticks <= 0 else min_ticks
     max_ticks = tick_space + 2
-    min_interval = max(
-        1, int(max_width / max_ticks)
-    )  # to ensure zero can't be an interval
-    max_interval = round(max_width / min_ticks)
+
+    # Ensure zero can't be an interval
+    min_interval = max(1, int(max_width / max_ticks))
+    max_interval = max(1, round(max_width / min_ticks))
 
     candidate_intervals = list(range(min_interval, max_interval + 1))
     return get_best_interval_in_list(candidate_intervals)

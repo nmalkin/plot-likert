@@ -55,7 +55,7 @@ def plot_counts(
     xtick_interval: typing.Optional[int] = None,
     compute_percentages: bool = False,
     bar_labels: bool = False,
-    bar_labels_color: str = "white",
+    bar_labels_color: typing.Union[str, typing.List[str]] = "white",
     **kwargs,
 ) -> matplotlib.axes.Axes:
     """
@@ -83,8 +83,8 @@ def plot_counts(
         Convert the given response counts to percentages and display the counts as percentages in the plot.
     bar_labels : bool, default = False
         Show a label with the value of each bar segment on top of it
-    bar_labels_color: str, default = "white"
-        If showing bar labels, use this color for the text
+    bar_labels_color : str or list of str = "white",
+        If showing bar labels, use this color (or colors) for the text
     **kwargs
         Options to pass to pandas plotting method.
 
@@ -196,14 +196,25 @@ def plot_counts(
         bar_label_format = BAR_LABEL_FORMAT + ("%%" if compute_percentages else "")
         bar_size_cutoff = counts_sum * BAR_LABEL_SIZE_CUTOFF
 
-        for segment in axes.containers[1:]:  # the first container is the padding
+        if isinstance(bar_labels_color, list):
+            if len(bar_labels_color) != len(scale):
+                raise PlotLikertError(
+                    "list of bar label colors must have as many values as the scale"
+                )
+            bar_label_colors = bar_labels_color
+        else:
+            bar_label_colors = [bar_labels_color] * len(scale)
+
+        for i, segment in enumerate(
+            axes.containers[1:]  # the first container is the padding
+        ):
             try:
                 labels = axes.bar_label(
                     segment,
                     label_type="center",
                     fmt=bar_label_format,
                     padding=0,
-                    color=bar_labels_color,
+                    color=bar_label_colors[i],
                     weight="bold",
                 )
             except AttributeError:
@@ -324,7 +335,7 @@ def plot_likert(
     figsize=None,
     xtick_interval: typing.Optional[int] = None,
     bar_labels: bool = False,
-    bar_labels_color: str = "white",
+    bar_labels_color: typing.Union[str, typing.List[str]] = "white",
     **kwargs,
 ) -> matplotlib.axes.Axes:
     """
@@ -356,8 +367,8 @@ def plot_likert(
         Controls the interval between x-axis ticks.
     bar_labels : bool, default = False
         Show a label with the value of each bar segment on top of it
-    bar_labels_color: str, default = "white"
-        If showing bar labels, use this color for the text
+    bar_labels_color : str or list of str = "white",
+        If showing bar labels, use this color (or colors) for the text
     **kwargs
         Options to pass to pandas plotting method.
 

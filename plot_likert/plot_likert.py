@@ -37,7 +37,7 @@ HIDE_EXCESSIVE_TICK_LABELS = True
 PADDING_LEFT = 0.02  # fraction of the total width to use as padding
 PADDING_RIGHT = 0.04  # fraction of the total width to use as padding
 BAR_LABEL_FORMAT = (
-    "%d"  # if showing labels, how should the number be formatted? e.g., "%.2g"
+    "%g"  # if showing labels, how should the number be formatted? e.g., "%.2g"
 )
 BAR_LABEL_SIZE_CUTOFF = 0.05
 

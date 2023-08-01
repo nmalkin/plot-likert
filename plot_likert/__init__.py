@@ -1,3 +1,4 @@
+import plot_likert.plot_likert as __internal__
 from .plot_likert import (
     plot_likert,
     plot_counts,

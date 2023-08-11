@@ -43,7 +43,7 @@ Usage and sample figures
 ------------------------
 
 To learn about how to use this library and see more example figures,
-[visit the User Guide, which is a Jupyter notebook](https://github.com/nmalkin/plot-likert/blob/stable/docs/guide.ipynb).
+[visit the User Guide, which is a Jupyter notebook](https://github.com/nmalkin/plot-likert/blob/release/docs/guide.ipynb).
 
 Want to see even more examples? [Look here](docs/lots_of_random_figures.ipynb)!
 

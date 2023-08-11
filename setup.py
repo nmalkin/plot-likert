@@ -8,7 +8,7 @@ with open("requirements.txt", "r") as f:
 
 setuptools.setup(
     name="plot-likert",
-    version="0.4.0",
+    version="0.5.0",
     author="nmalkin",
     description="Library to visualize results from Likert-style survey questions",
     long_description=long_description,

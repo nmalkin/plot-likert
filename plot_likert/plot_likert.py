@@ -254,7 +254,10 @@ def likert_counts(
                 f"A response was found with value `{value}`, which is not one of the values in the provided scale: {scale}. If this is unexpected, you might want to double-check for extra whitespace, capitalization, spelling, or type (int versus str)."
             )
 
-    df.applymap(validate)
+    try:
+        df.map(validate)
+    except AttributeError:  # for compatibility with Pandas < 2.1.0
+        df.applymap(validate)
 
     # fix long questions for printing
     old_labels = list(df)
@@ -289,14 +292,19 @@ def likert_percentages(
     # Warn if the rows have different counts
     # If they do, the percentages shouldn't be compared.
     responses_per_question = counts.sum(axis=1)
-    responses_to_first_question = responses_per_question[0]
+    responses_to_first_question = responses_per_question.iloc[0]
     responses_same = responses_per_question == responses_to_first_question
     if not responses_same.all():
         warn(
             "In your data, not all questions have the same number of responses. i.e., different numbers of people answered each question. Therefore, the percentages aren't directly comparable: X% for one question represents a different number of responses than X% for another question, yet they will appear the same in the percentage graph. This may be misleading to your reader."
         )
 
-    return counts.apply(lambda row: row / row.sum(), axis=1).applymap(lambda v: 100 * v)
+    try:
+        return counts.apply(lambda row: row / row.sum(), axis=1).map(lambda v: 100 * v)
+    except AttributeError:  # for compatibility with Pandas < 2.1.0
+        return counts.apply(lambda row: row / row.sum(), axis=1).applymap(
+            lambda v: 100 * v
+        )
 
 
 def _compute_counts_percentage(counts: pd.DataFrame) -> pd.DataFrame:
@@ -307,7 +315,7 @@ def _compute_counts_percentage(counts: pd.DataFrame) -> pd.DataFrame:
     # Warn if the rows have different counts
     # If they do, the percentages shouldn't be compared.
     responses_per_question = counts.sum(axis="columns")
-    responses_to_first_question = responses_per_question[0]
+    responses_to_first_question = responses_per_question.iloc[0]
     responses_same = responses_per_question == responses_to_first_question
     if not responses_same.all():
         warn(
@@ -323,7 +331,10 @@ def likert_response(df: pd.DataFrame, scale: Scale) -> pd.DataFrame:
     orginal data.
     """
     for i in range(0, len(scale)):
-        df = df.applymap(lambda x: scale[i] if str(i) in x else x)
+        try:
+            df = df.map(lambda x: scale[i] if str(i) in x else x)
+        except AttributeError:  # for compatibility with Pandas < 2.1.0
+            df = df.map(lambda x: scale[i] if str(i) in x else x)
     return df
 
 

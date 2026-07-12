@@ -46,6 +46,38 @@ class PlotLikertError(ValueError):
     pass
 
 
+XRange = typing.Union[float, typing.Tuple[float, float]]
+
+
+def _normalize_x_range(
+    x_range: typing.Optional[XRange],
+) -> typing.Optional[typing.Tuple[float, float]]:
+    """
+    Validate the x_range argument and expand it into a (left, right) pair
+    of extents from the plot's center line.
+    """
+    if x_range is None:
+        return None
+
+    if isinstance(x_range, (tuple, list)):
+        if len(x_range) != 2:
+            raise PlotLikertError(
+                "x_range must be a single number or a (left, right) pair"
+            )
+        left, right = (float(value) for value in x_range)
+    else:
+        left = right = float(x_range)
+
+    if left < 0 or right < 0:
+        raise PlotLikertError("x_range values must not be negative")
+    if left == 0 and right == 0:
+        raise PlotLikertError(
+            "x_range must extend beyond the center line in at least one direction"
+        )
+
+    return left, right
+
+
 def plot_counts(
     counts: pd.DataFrame,
     scale: Scale,
@@ -56,6 +88,7 @@ def plot_counts(
     compute_percentages: bool = False,
     bar_labels: bool = False,
     bar_labels_color: typing.Union[str, typing.List[str]] = "white",
+    x_range: typing.Optional[XRange] = None,
     **kwargs,
 ) -> matplotlib.axes.Axes:
     """
@@ -85,6 +118,14 @@ def plot_counts(
         Show a label with the value of each bar segment on top of it
     bar_labels_color : str or list of str = "white",
         If showing bar labels, use this color (or colors) for the text
+    x_range : float or tuple of (float, float), optional
+        Fix how far the x-axis extends from the plot's center line:
+        either a single number, used for both directions, or a (left, right) pair.
+        The values are in the same units as the plot:
+        percentage points when plotting percentages, response counts otherwise.
+        By default, the range is determined from the data;
+        fixing it explicitly gives multiple plots the same scale,
+        so they can be compared side by side.
     **kwargs
         Options to pass to pandas plotting method.
 
@@ -110,6 +151,8 @@ def plot_counts(
             counts_are_percentages = True
         else:
             counts_are_percentages = False
+
+    x_range = _normalize_x_range(x_range)
 
     # Pad each row/question from the left, so that they're centered around the middle (Neutral) response
     scale_middle = len(scale) // 2
@@ -143,17 +186,35 @@ def plot_counts(
     center_line.set_zorder(-1)
 
     # Compute and show x labels
-    max_width = int(round(padded_counts.sum(axis=1).max()))
+    if x_range is None:
+        # Size the axis to the data
+        max_width = int(round(padded_counts.sum(axis=1).max()))
+        left_edge = center
+        right_edge = max_width - center
+    else:
+        # Use the fixed range requested by the caller
+        left_edge, right_edge = x_range
+        bars_left = middles
+        bars_right = counts.sum(axis="columns") - middles
+        if (bars_left > left_edge).any() or (bars_right > right_edge).any():
+            warn(
+                "Some of the response bars extend beyond the given x_range and will be cut off in the plot."
+            )
+
     if xtick_interval is None:
         num_ticks = axes.xaxis.get_tick_space()
-        interval = interval_helper.get_interval_for_scale(num_ticks, max_width)
+        interval = interval_helper.get_interval_for_scale(
+            num_ticks, int(round(left_edge + right_edge))
+        )
     else:
         interval = xtick_interval
 
-    right_edge = max_width - center
     right_labels = np.arange(interval, right_edge + interval, interval)
+    if x_range is not None:
+        # Don't put ticks beyond the requested range
+        right_labels = right_labels[right_labels <= right_edge]
     right_values = center + right_labels
-    left_labels = np.arange(0, center + 1, interval)
+    left_labels = np.arange(0, left_edge + 1, interval)
     left_values = center - left_labels
     xlabels = np.concatenate([left_labels, right_labels])
     xvalues = np.concatenate([left_values, right_values])
@@ -161,8 +222,9 @@ def plot_counts(
     xlabels = [int(l) for l in xlabels if round(l) == l]
 
     # Ensure tick labels don't exceed number of participants
-    # (or, in the case of percentages, 100%) since that looks confusing
-    if HIDE_EXCESSIVE_TICK_LABELS:
+    # (or, in the case of percentages, 100%) since that looks confusing; unless the
+    # x-range was specified explicitly.
+    if HIDE_EXCESSIVE_TICK_LABELS and x_range is None:
         # Labels for tick values that are too high are hidden,
         # but the tick mark itself remains displayed.
         total_max = counts.sum(axis="columns").max()
@@ -184,12 +246,21 @@ def plot_counts(
 
     # Adjust padding
     counts_sum = counts.sum(axis="columns").max()
-    # Pad the bars on the left (so there's a gap between the axis and the first section)
-    padding_left = counts_sum * PADDING_LEFT
-    # Tighten the padding on the right of the figure
-    padding_right = counts_sum * PADDING_RIGHT
-    x_min, x_max = axes.get_xlim()
-    axes.set_xlim(x_min - padding_left, x_max - padding_right)
+    if x_range is None:
+        # Pad the bars on the left (so there's a gap between the axis and the first section)
+        padding_left = counts_sum * PADDING_LEFT
+        # Tighten the padding on the right of the figure
+        padding_right = counts_sum * PADDING_RIGHT
+        x_min, x_max = axes.get_xlim()
+        axes.set_xlim(x_min - padding_left, x_max - padding_right)
+    else:
+        # Base the limits only on the requested range (not the data),
+        # so that plots sharing an x_range get identical axes
+        total_width = left_edge + right_edge
+        axes.set_xlim(
+            center - left_edge - total_width * PADDING_LEFT,
+            center + right_edge + total_width * PADDING_RIGHT,
+        )
 
     # Add labels
     if bar_labels:
@@ -350,6 +421,7 @@ def plot_likert(
     xtick_interval: typing.Optional[int] = None,
     bar_labels: bool = False,
     bar_labels_color: typing.Union[str, typing.List[str]] = "white",
+    x_range: typing.Optional[XRange] = None,
     **kwargs,
 ) -> matplotlib.axes.Axes:
     """
@@ -383,6 +455,14 @@ def plot_likert(
         Show a label with the value of each bar segment on top of it
     bar_labels_color : str or list of str = "white",
         If showing bar labels, use this color (or colors) for the text
+    x_range : float or tuple of (float, float), optional
+        Fix how far the x-axis extends from the plot's center line:
+        either a single number, used for both directions, or a (left, right) pair.
+        The values are in the same units as the plot:
+        percentage points when plotting percentages, response counts otherwise.
+        By default, the range is determined from the data;
+        fixing it explicitly gives multiple plots the same scale,
+        so they can be compared side by side.
     **kwargs
         Options to pass to pandas plotting method.
 
@@ -411,6 +491,7 @@ def plot_likert(
         compute_percentages=plot_percentage,
         bar_labels=bar_labels,
         bar_labels_color=bar_labels_color,
+        x_range=x_range,
         **kwargs,
     )
 

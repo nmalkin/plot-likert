@@ -15,12 +15,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        pandas-version: ["latest"]
+        include:
+          # oldest pandas with DataFrame.map, and the last 2.x series
+          - python-version: "3.11"
+            pandas-version: "2.1.*"
+          - python-version: "3.12"
+            pandas-version: "2.2.*"
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
@@ -28,10 +35,11 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ "${{ matrix.pandas-version }}" != "latest" ]; then pip install "pandas==${{ matrix.pandas-version }}" "numpy<2"; fi
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
       - name: Test with unittest
         run: |
-          python -m unittest
+          python -m unittest -v

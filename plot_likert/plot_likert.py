@@ -7,7 +7,8 @@ https://stackoverflow.com/a/41384812
 
 Note:
 the data must be strings
-for a float: scores.applymap(int).applymap(str)
+for a float: scores.map(int).map(str)
+(with pandas < 2.1, use DataFrame.applymap instead of DataFrame.map)
 """
 
 
@@ -44,6 +45,18 @@ BAR_LABEL_SIZE_CUTOFF = 0.05
 
 class PlotLikertError(ValueError):
     pass
+
+
+def _map_elements(df: pd.DataFrame, func) -> pd.DataFrame:
+    """
+    Apply a function to every element of a DataFrame.
+
+    DataFrame.applymap was deprecated in pandas 2.1 (renamed to DataFrame.map)
+    and removed in pandas 3.0, so use whichever one is available.
+    """
+    if hasattr(pd.DataFrame, "map"):
+        return df.map(func)
+    return df.applymap(func)  # pandas < 2.1
 
 
 def plot_counts(
@@ -254,18 +267,14 @@ def likert_counts(
                 f"A response was found with value `{value}`, which is not one of the values in the provided scale: {scale}. If this is unexpected, you might want to double-check for extra whitespace, capitalization, spelling, or type (int versus str)."
             )
 
-    try:
-        df.map(validate)
-    except AttributeError:  # for compatibility with Pandas < 2.1.0
-        df.applymap(validate)
+    _map_elements(df, validate)
 
     # fix long questions for printing
     old_labels = list(df)
     new_labels = ["\n".join(wrap(str(l), label_max_width)) for l in old_labels]
-    if pd.__version__ >= "1.5.0":
-        df = df.set_axis(new_labels, axis=1, copy=True)
-    else:
-        df = df.set_axis(new_labels, axis=1, inplace=False)
+    # set_axis returns a new object by default (pandas >= 1.0); the `inplace` keyword
+    # was removed in pandas 2.0 and `copy` is deprecated in pandas 3.0, so pass neither
+    df = df.set_axis(new_labels, axis=1)
 
     counts_unordered = df.apply(lambda row: row.value_counts())
     counts = counts_unordered.reindex(scale).T
@@ -299,12 +308,9 @@ def likert_percentages(
             "In your data, not all questions have the same number of responses. i.e., different numbers of people answered each question. Therefore, the percentages aren't directly comparable: X% for one question represents a different number of responses than X% for another question, yet they will appear the same in the percentage graph. This may be misleading to your reader."
         )
 
-    try:
-        return counts.apply(lambda row: row / row.sum(), axis=1).map(lambda v: 100 * v)
-    except AttributeError:  # for compatibility with Pandas < 2.1.0
-        return counts.apply(lambda row: row / row.sum(), axis=1).applymap(
-            lambda v: 100 * v
-        )
+    return _map_elements(
+        counts.apply(lambda row: row / row.sum(), axis=1), lambda v: 100 * v
+    )
 
 
 def _compute_counts_percentage(counts: pd.DataFrame) -> pd.DataFrame:
@@ -331,10 +337,7 @@ def likert_response(df: pd.DataFrame, scale: Scale) -> pd.DataFrame:
     orginal data.
     """
     for i in range(0, len(scale)):
-        try:
-            df = df.map(lambda x: scale[i] if str(i) in x else x)
-        except AttributeError:  # for compatibility with Pandas < 2.1.0
-            df = df.map(lambda x: scale[i] if str(i) in x else x)
+        df = _map_elements(df, lambda x: scale[i] if str(i) in x else x)
     return df
 
 
